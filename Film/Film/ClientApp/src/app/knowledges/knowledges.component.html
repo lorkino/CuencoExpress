@@ -1,0 +1,27 @@
+<div class="container" [formGroup]="group">
+  <div class="row centered-form">
+    <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Contact list demo</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group" (keyup)="searchKnowlegment($event)">
+              <select   id="select-name" placeholder="Select a person..." multiple>
+                <!--<option value="">Type a name...</option>
+                <option value="4">Thomas Edison</option>
+                <option value="17">John Doe</option>
+                <option value="19">John Donut</option>
+                <option value="21">Dante Joe</option>
+                <option value="22">Jo Dod</option>
+                <option value="1">Nikola</option>
+                <option value="3">Nikola Tesla</option>
+                <option value="5">Arnold Schwarzenegger</option>-->
+              </select>
+            </div>
+            <input id="knowledges" formControlName="knowledges" type="text"  name="name" value="asdasd" [hidden]="true" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

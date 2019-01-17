@@ -1,0 +1,105 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Content Remove="$(SpaRoot)**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Identity\Pages\Account\Register.cs" />
+    <Compile Remove="Migrations\20181222173005_InitialCreate.cs" />
+    <Compile Remove="Migrations\20181222173005_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20181225125742_AddUser.cs" />
+    <Compile Remove="Migrations\20181225125742_AddUser.Designer.cs" />
+    <Compile Remove="Migrations\20181225134528_AddUser2.cs" />
+    <Compile Remove="Migrations\20181225134528_AddUser2.Designer.cs" />
+    <Compile Remove="Migrations\20181225134819_AddUser3.cs" />
+    <Compile Remove="Migrations\20181225134819_AddUser3.Designer.cs" />
+    <Compile Remove="Migrations\20181225142532_AddUser33.cs" />
+    <Compile Remove="Migrations\20181225142532_AddUser33.Designer.cs" />
+    <Compile Remove="Migrations\20181225142855_AddUser35.cs" />
+    <Compile Remove="Migrations\20181225142855_AddUser35.Designer.cs" />
+    <Compile Remove="Migrations\20181225143007_AddUser36.cs" />
+    <Compile Remove="Migrations\20181225143007_AddUser36.Designer.cs" />
+    <Compile Remove="Migrations\20181225143039_AddUser39.cs" />
+    <Compile Remove="Migrations\20181225143039_AddUser39.Designer.cs" />
+    <Compile Remove="Migrations\20181225143401_AddUser388.cs" />
+    <Compile Remove="Migrations\20181225143401_AddUser388.Designer.cs" />
+    <Compile Remove="Migrations\20181225144342_AddUser380.cs" />
+    <Compile Remove="Migrations\20181225144342_AddUser380.Designer.cs" />
+    <Compile Remove="Migrations\20181225144700_AddUsersso.cs" />
+    <Compile Remove="Migrations\20181225144700_AddUsersso.Designer.cs" />
+    <Compile Remove="Migrations\20181225144853_AddUserssok.cs" />
+    <Compile Remove="Migrations\20181225144853_AddUserssok.Designer.cs" />
+    <Compile Remove="Migrations\20181225145038_AddUserssok1.cs" />
+    <Compile Remove="Migrations\20181225145038_AddUserssok1.Designer.cs" />
+    <Compile Remove="Migrations\20181225150058_as.cs" />
+    <Compile Remove="Migrations\20181225150058_as.Designer.cs" />
+    <Compile Remove="Migrations\20181225150327_as.cs" />
+    <Compile Remove="Migrations\20181225150327_as.Designer.cs" />
+    <Compile Remove="Migrations\20181225152626_asl6.cs" />
+    <Compile Remove="Migrations\20181225152626_asl6.Designer.cs" />
+    <Compile Remove="Migrations\20181225153520_a.cs" />
+    <Compile Remove="Migrations\20181225153520_a.Designer.cs" />
+    <Compile Remove="Migrations\20181226115450_tud2.cs" />
+    <Compile Remove="Migrations\20181226115450_tud2.Designer.cs" />
+    <Compile Remove="Migrations\20181226115633_tud7.cs" />
+    <Compile Remove="Migrations\20181226115633_tud7.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Services\" />
+    <Folder Include="Validators\" />
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+  </Target>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build -- --prod" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build:ssr -- --prod" Condition=" '$(BuildServerSideRenderer)' == 'true' " />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)dist\**; $(SpaRoot)dist-server\**" />
+      <DistFiles Include="$(SpaRoot)node_modules\**" Condition="'$(BuildServerSideRenderer)' == 'true'" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
+  <ProjectExtensions><VisualStudio><UserProperties ClientApp_4angular_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>
