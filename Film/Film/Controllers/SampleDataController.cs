@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Film.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace Film.Controllers
         };
 
         [HttpGet("[action]")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize]
         public IEnumerable<WeatherForecast> WeatherForecasts()
         {
             var rng = new Random();
@@ -35,6 +36,7 @@ namespace Film.Controllers
             public int TemperatureC { get; set; }
             public string Summary { get; set; }
 
+            
             public int TemperatureF
             {
                 get  

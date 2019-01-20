@@ -83,7 +83,13 @@ namespace Film
             //    options.LogoutPath = "/auth/logout";
             //});
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+            services.AddAuthentication().AddFacebook(facebookOptions =>
+                {
+                    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                   
+
+                }).AddJwtBearer(
                 options=>options.TokenValidationParameters= new TokenValidationParameters {
                     ValidateIssuer = true,
                     ValidateActor = true,
@@ -94,14 +100,13 @@ namespace Film
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["secret_key"])),
                     ClockSkew = TimeSpan.Zero
                 }
-                
-                
                 );
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddDbContextPool<ApplicatonDbContext>(
              optionsAction => optionsAction.UseSqlServer(Configuration.GetConnectionString("MyDatabase")));
 
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -125,7 +130,7 @@ namespace Film
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseAuthentication();
-        
+            app.UseHsts();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -17,6 +17,9 @@ import { ExpressService } from './express.service';
 import { MyInterceptor } from './interceptor';
 import { ProfileComponent } from './profile/profile.component';
 import { KnowledgesComponent } from './knowledges/knowledges.component';
+import { SocialLoginModule, AuthServiceConfig } from "angular5-social-login";
+import { FacebookLoginProvider } from "angular5-social-login";
+import { getAuthServiceConfigs } from "./socialloginConfig";
 @NgModule({
   declarations: [
     AppComponent,
@@ -34,6 +37,7 @@ import { KnowledgesComponent } from './knowledges/knowledges.component';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    SocialLoginModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
@@ -43,11 +47,17 @@ import { KnowledgesComponent } from './knowledges/knowledges.component';
       { path: 'profile', component: ProfileComponent, canActivate: [AuthGuardService]  }
     ])
   ],
-  providers: [AuthGuardService, ExpressService,{
+  providers: [AuthGuardService, ExpressService, {
     provide: HTTP_INTERCEPTORS,
+    useFactory: getAuthServiceConfigs,
     useClass: MyInterceptor,
     multi: true
-  }],
+  },
+    {
+      provide:  AuthServiceConfig,
+      useFactory: getAuthServiceConfigs
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
