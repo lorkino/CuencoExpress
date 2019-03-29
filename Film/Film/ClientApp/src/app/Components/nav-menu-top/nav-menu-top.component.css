@@ -1,0 +1,14 @@
+/*.badge-holder {
+  position: relative;
+  display: inline-block;
+}
+
+.badge {
+  position: absolute;
+  top: 5px;
+  right: 12px;
+}*/
+
+.pagination > li {
+  margin-right: 10px;
+}

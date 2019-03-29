@@ -48,7 +48,7 @@ namespace Film.Areas.Identity.Pages.Account
         //    [Display(Name = "Remember me?")]
         //    public bool RememberMe { get; set; }
         //}
-        
+
         [HttpGet]
         [Authorize]
         public async Task OnGetAsync(string returnUrl = null)
@@ -73,26 +73,22 @@ namespace Film.Areas.Identity.Pages.Account
 
             //// This doesn't count login failures towards account lockout
             //// To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            
-           
-                var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, lockoutOnFailure: true);
-                User userComplete = await _userManager.FindByEmailAsync(user.Email);
 
-          
-            
+
+            var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, lockoutOnFailure: true);
+            User userComplete = await _userManager.FindByEmailAsync(user.Email);
+
+
+
             if (userComplete != null)
+            {
+                if (result.Succeeded)
                 {
-                    
-                    if (result.Succeeded)
-                    {
-                    
-                   //llamamos al token de acceso
+                    //llamamos al token de acceso
                     Tuple<string, DateTime> token = Film.Controllers.Account.BuildToken(user);
                     User userSecure = new User
                     {
                         Admin = userComplete.Admin,
-                        Apellidos = userComplete.Apellidos,
-                        Nombre = userComplete.Nombre,
                         Email = userComplete.Email,
                         EmailConfirmed = userComplete.EmailConfirmed,
                         UserDates = userComplete.UserDates,
@@ -102,20 +98,18 @@ namespace Film.Areas.Identity.Pages.Account
                         TokenExpiration = token.Item2
                     };
                     return Json(userSecure);
-                    }
-                   
-                    //if (result.RequiresTwoFactor)
-                    //{
-                    //    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                    //}
-                    if (result.IsLockedOut)
-                    {
-
-                        return Json("Blocked user");
-
-                    }
                 }
-           
+
+                //if (result.RequiresTwoFactor)
+                //{
+                //    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                //}
+                if (result.IsLockedOut)
+                {
+                    return Json("Blocked user");
+                }
+            }
+
 
             //// If we got this far, something failed, redisplay form
             return Json("Incorrect User");

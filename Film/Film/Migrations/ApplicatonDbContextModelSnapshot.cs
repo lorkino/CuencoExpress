@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Film.Migrations
 {
-    [DbContext(typeof(ApplicatonDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicatonDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -19,53 +19,75 @@ namespace Film.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Film.Models.Cliente", b =>
-                {
-                    b.Property<string>("Id");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Cliente");
-                });
-
-            modelBuilder.Entity("Film.Models.Trabajador", b =>
+            modelBuilder.Entity("Film.Models.Images", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("TrabajoId");
+                    b.Property<byte[]>("Img");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("JobId");
+
+                    b.Property<string>("JobId1");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TrabajoId");
+                    b.HasIndex("JobId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("JobId1");
 
-                    b.ToTable("Trabajador");
+                    b.ToTable("Images");
                 });
 
-            modelBuilder.Entity("Film.Models.Trabajo", b =>
+            modelBuilder.Entity("Film.Models.Job", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Estado");
+                    b.Property<DateTime>("CreatedDate");
 
-                    b.Property<double>("Puntuacion");
+                    b.Property<string>("Description");
 
-                    b.Property<string>("TrabajadorId");
+                    b.Property<string>("Tittle");
+
+                    b.Property<string>("UserCreatorId");
+
+                    b.Property<string>("UserWorkerId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TrabajadorId");
+                    b.HasIndex("UserCreatorId");
 
-                    b.ToTable("Trabajo");
+                    b.HasIndex("UserWorkerId");
+
+                    b.ToTable("Job");
+                });
+
+            modelBuilder.Entity("Film.Models.JobKnowledges", b =>
+                {
+                    b.Property<string>("JobId");
+
+                    b.Property<string>("KnowledgesId");
+
+                    b.HasKey("JobId", "KnowledgesId");
+
+                    b.HasIndex("KnowledgesId");
+
+                    b.ToTable("JobKnowledges");
+                });
+
+            modelBuilder.Entity("Film.Models.Knowledges", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Explanation");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Knowledges");
                 });
 
             modelBuilder.Entity("Film.Models.User", b =>
@@ -77,8 +99,6 @@ namespace Film.Migrations
 
                     b.Property<bool>("Admin");
 
-                    b.Property<string>("Apellidos");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -87,13 +107,9 @@ namespace Film.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<bool>("Estado");
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("Nombre");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
@@ -108,6 +124,8 @@ namespace Film.Migrations
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp");
+
+                    b.Property<bool>("Status");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -131,15 +149,46 @@ namespace Film.Migrations
                 {
                     b.Property<string>("Id");
 
-                    b.Property<string>("Direccion");
+                    b.Property<string>("Address1");
 
-                    b.Property<double>("Puntuacion");
+                    b.Property<string>("Address2");
 
-                    b.Property<string>("Telefono");
+                    b.Property<string>("City");
+
+                    b.Property<string>("Country");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("PersonalInfo");
+
+                    b.Property<string>("Phone");
+
+                    b.Property<string>("PostalCode");
+
+                    b.Property<byte[]>("ProfileImg");
+
+                    b.Property<double>("Score");
+
+                    b.Property<string>("State");
+
+                    b.Property<string>("Surname");
 
                     b.HasKey("Id");
 
                     b.ToTable("UserDates");
+                });
+
+            modelBuilder.Entity("Film.Models.UserKnowledges", b =>
+                {
+                    b.Property<string>("UserId");
+
+                    b.Property<string>("KnowledgesId");
+
+                    b.HasKey("UserId", "KnowledgesId");
+
+                    b.HasIndex("KnowledgesId");
+
+                    b.ToTable("UserKnowledges");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -252,34 +301,39 @@ namespace Film.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Film.Models.Cliente", b =>
+            modelBuilder.Entity("Film.Models.Images", b =>
                 {
-                    b.HasOne("Film.Models.Trabajo", "Trabajo")
-                        .WithOne("Cliente")
-                        .HasForeignKey("Film.Models.Cliente", "Id")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Film.Models.User", "User")
+                    b.HasOne("Film.Models.User", "Job")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("JobId");
+
+                    b.HasOne("Film.Models.Job")
+                        .WithMany("JobImages")
+                        .HasForeignKey("JobId1");
                 });
 
-            modelBuilder.Entity("Film.Models.Trabajador", b =>
+            modelBuilder.Entity("Film.Models.Job", b =>
                 {
-                    b.HasOne("Film.Models.Trabajo", "Trabajo")
+                    b.HasOne("Film.Models.User", "UserCreator")
                         .WithMany()
-                        .HasForeignKey("TrabajoId");
+                        .HasForeignKey("UserCreatorId");
 
-                    b.HasOne("Film.Models.User", "User")
+                    b.HasOne("Film.Models.User", "UserWorker")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserWorkerId");
                 });
 
-            modelBuilder.Entity("Film.Models.Trabajo", b =>
+            modelBuilder.Entity("Film.Models.JobKnowledges", b =>
                 {
-                    b.HasOne("Film.Models.Cliente", "Trabajador")
-                        .WithMany()
-                        .HasForeignKey("TrabajadorId");
+                    b.HasOne("Film.Models.Job", "Job")
+                        .WithMany("JobKnowledges")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Film.Models.Knowledges", "Knowledges")
+                        .WithMany("JobKnowledges")
+                        .HasForeignKey("KnowledgesId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Film.Models.UserDates", b =>
@@ -287,7 +341,20 @@ namespace Film.Migrations
                     b.HasOne("Film.Models.User", "User")
                         .WithOne("UserDates")
                         .HasForeignKey("Film.Models.UserDates", "Id")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Film.Models.UserKnowledges", b =>
+                {
+                    b.HasOne("Film.Models.Knowledges", "Knowledges")
+                        .WithMany("UserKnowledges")
+                        .HasForeignKey("KnowledgesId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Film.Models.User", "User")
+                        .WithMany("UserKnowledges")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

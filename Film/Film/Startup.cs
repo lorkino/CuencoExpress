@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Newtonsoft.Json;
+using Nest;
+using Film.SignalR;
 
 namespace Film
 {
@@ -31,6 +34,10 @@ namespace Film
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().AddJsonOptions(opt =>
+             {
+                 opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+             });
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -38,7 +45,7 @@ namespace Film
                 configuration.RootPath = "ClientApp/dist";
             });
             
-            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicatonDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -48,29 +55,29 @@ namespace Film
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 1;
-
+                options.SignIn.RequireConfirmedEmail = false;
                 // Lockout settings.
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
-
+                
                 // User settings.
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
             });
-            
-            services.ConfigureApplicationCookie(options =>
-            {
-                // Cookie settings
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
-                options.LoginPath = "/api/Login";
-                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                options.SlidingExpiration = true;
-            });
-     
+            //services.ConfigureApplicationCookie(options =>
+            //{
+            //    // Cookie settings
+            //    options.Cookie.HttpOnly = true;
+            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+            //    options.LoginPath = "/api/Login";
+            //    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            //    options.SlidingExpiration = true;
+            //});
+
             //services.AddAuthentication(options =>
             //{
             //    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -87,10 +94,11 @@ namespace Film
                 {
                     facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                   
+
 
                 }).AddJwtBearer(
-                options=>options.TokenValidationParameters= new TokenValidationParameters {
+                options => options.TokenValidationParameters = new TokenValidationParameters
+                {
                     ValidateIssuer = true,
                     ValidateActor = true,
                     ValidateLifetime = true,
@@ -98,15 +106,15 @@ namespace Film
                     ValidIssuer = "yourdomain.com",
                     ValidAudience = "yourdomain.com",
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["secret_key"])),
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.MinValue
                 }
                 );
-
+            services.AddSignalR();
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddDbContextPool<ApplicatonDbContext>(
+            services.AddDbContextPool<ApplicationDbContext>(
              optionsAction => optionsAction.UseSqlServer(Configuration.GetConnectionString("MyDatabase")));
-
            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,15 +123,20 @@ namespace Film
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSignalR(route =>
+                {
+                    route.MapHub<NotificationsHub>("/chathub");
+                });
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetService<ApplicatonDbContext>();
+                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 // Seed the database.
             }
             app.UseHttpsRedirection();

@@ -1,0 +1,316 @@
+<form [formGroup]="profileForm" (submit)="submit()" >
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="form-group">
+        <label for="firstname">Firstname</label>
+        <input formControlName="name" type="text" class="form-control" id="firstname" placeholder="Firstname">
+      </div>
+      <div class="form-group">
+        <label for="lastname">Last Name</label>
+        <input formControlName="surname" type="text" class="form-control" id="lastname" placeholder="Lastname">
+      </div>
+
+      <div class="form-group">
+        <label for="AddressLine1">Address Line 1</label>
+        <input formControlName="address1" type="text" class="form-control" id="AddressLine1" placeholder="Address Line 1">
+      </div>
+      <div class="form-group">
+        <label for="Address Line 1">Address Line 2</label>
+        <input formControlName="address2" type="text" class="form-control" id="AddressLine2" placeholder="Address Line 2">
+      </div>
+
+
+    </div>
+    <div class="col-xs-6">
+      <div class="form-group">
+        <label for="city">City / Town</label>
+        <input formControlName="city" type="text" class="form-control" id="city" placeholder="city">
+      </div>
+      <div class="form-group">
+        <label for="state">State / Province / Region</label>
+        <input formControlName="state" type="text" class="form-control" id="state" placeholder="State / Province / Region">
+      </div>
+      <div class="form-group">
+        <label for="zip">Zip / Postal Code</label>
+        <input formControlName="postalCode" type="text" class="form-control" id="zip" placeholder="Zip ore Postal Code">
+      </div>
+      <div class="form-group">
+        <label for="Country">Country</label>
+        <select formControlName="country" id="country" name="country" autocomplete="country" class="form-control">
+          <option value="" selected="selected">(please select a country)</option>
+          <option value="AF">Afghanistan</option>
+          <option value="AL">Albania</option>
+          <option value="DZ">Algeria</option>
+          <option value="AS">American Samoa</option>
+          <option value="AD">Andorra</option>
+          <option value="AO">Angola</option>
+          <option value="AI">Anguilla</option>
+          <option value="AQ">Antarctica</option>
+          <option value="AG">Antigua and Barbuda</option>
+          <option value="AR">Argentina</option>
+          <option value="AM">Armenia</option>
+          <option value="AW">Aruba</option>
+          <option value="AU">Australia</option>
+          <option value="AT">Austria</option>
+          <option value="AZ">Azerbaijan</option>
+          <option value="BS">Bahamas</option>
+          <option value="BH">Bahrain</option>
+          <option value="BD">Bangladesh</option>
+          <option value="BB">Barbados</option>
+          <option value="BY">Belarus</option>
+          <option value="BE">Belgium</option>
+          <option value="BZ">Belize</option>
+          <option value="BJ">Benin</option>
+          <option value="BM">Bermuda</option>
+          <option value="BT">Bhutan</option>
+          <option value="BO">Bolivia</option>
+          <option value="BA">Bosnia and Herzegowina</option>
+          <option value="BW">Botswana</option>
+          <option value="BV">Bouvet Island</option>
+          <option value="BR">Brazil</option>
+          <option value="IO">British Indian Ocean Territory</option>
+          <option value="BN">Brunei Darussalam</option>
+          <option value="BG">Bulgaria</option>
+          <option value="BF">Burkina Faso</option>
+          <option value="BI">Burundi</option>
+          <option value="KH">Cambodia</option>
+          <option value="CM">Cameroon</option>
+          <option value="CA">Canada</option>
+          <option value="CV">Cape Verde</option>
+          <option value="KY">Cayman Islands</option>
+          <option value="CF">Central African Republic</option>
+          <option value="TD">Chad</option>
+          <option value="CL">Chile</option>
+          <option value="CN">China</option>
+          <option value="CX">Christmas Island</option>
+          <option value="CC">Cocos (Keeling) Islands</option>
+          <option value="CO">Colombia</option>
+          <option value="KM">Comoros</option>
+          <option value="CG">Congo</option>
+          <option value="CD">Congo, the Democratic Republic of the</option>
+          <option value="CK">Cook Islands</option>
+          <option value="CR">Costa Rica</option>
+          <option value="CI">Cote d'Ivoire</option>
+          <option value="HR">Croatia (Hrvatska)</option>
+          <option value="CU">Cuba</option>
+          <option value="CY">Cyprus</option>
+          <option value="CZ">Czech Republic</option>
+          <option value="DK">Denmark</option>
+          <option value="DJ">Djibouti</option>
+          <option value="DM">Dominica</option>
+          <option value="DO">Dominican Republic</option>
+          <option value="TP">East Timor</option>
+          <option value="EC">Ecuador</option>
+          <option value="EG">Egypt</option>
+          <option value="SV">El Salvador</option>
+          <option value="GQ">Equatorial Guinea</option>
+          <option value="ER">Eritrea</option>
+          <option value="EE">Estonia</option>
+          <option value="ET">Ethiopia</option>
+          <option value="FK">Falkland Islands (Malvinas)</option>
+          <option value="FO">Faroe Islands</option>
+          <option value="FJ">Fiji</option>
+          <option value="FI">Finland</option>
+          <option value="FR">France</option>
+          <option value="FX">France, Metropolitan</option>
+          <option value="GF">French Guiana</option>
+          <option value="PF">French Polynesia</option>
+          <option value="TF">French Southern Territories</option>
+          <option value="GA">Gabon</option>
+          <option value="GM">Gambia</option>
+          <option value="GE">Georgia</option>
+          <option value="DE">Germany</option>
+          <option value="GH">Ghana</option>
+          <option value="GI">Gibraltar</option>
+          <option value="GR">Greece</option>
+          <option value="GL">Greenland</option>
+          <option value="GD">Grenada</option>
+          <option value="GP">Guadeloupe</option>
+          <option value="GU">Guam</option>
+          <option value="GT">Guatemala</option>
+          <option value="GN">Guinea</option>
+          <option value="GW">Guinea-Bissau</option>
+          <option value="GY">Guyana</option>
+          <option value="HT">Haiti</option>
+          <option value="HM">Heard and Mc Donald Islands</option>
+          <option value="VA">Holy See (Vatican City State)</option>
+          <option value="HN">Honduras</option>
+          <option value="HK">Hong Kong</option>
+          <option value="HU">Hungary</option>
+          <option value="IS">Iceland</option>
+          <option value="IN">India</option>
+          <option value="ID">Indonesia</option>
+          <option value="IR">Iran (Islamic Republic of)</option>
+          <option value="IQ">Iraq</option>
+          <option value="IE">Ireland</option>
+          <option value="IL">Israel</option>
+          <option value="IT">Italy</option>
+          <option value="JM">Jamaica</option>
+          <option value="JP">Japan</option>
+          <option value="JO">Jordan</option>
+          <option value="KZ">Kazakhstan</option>
+          <option value="KE">Kenya</option>
+          <option value="KI">Kiribati</option>
+          <option value="KP">Korea, Democratic People's Republic of</option>
+          <option value="KR">Korea, Republic of</option>
+          <option value="KW">Kuwait</option>
+          <option value="KG">Kyrgyzstan</option>
+          <option value="LA">Lao People's Democratic Republic</option>
+          <option value="LV">Latvia</option>
+          <option value="LB">Lebanon</option>
+          <option value="LS">Lesotho</option>
+          <option value="LR">Liberia</option>
+          <option value="LY">Libyan Arab Jamahiriya</option>
+          <option value="LI">Liechtenstein</option>
+          <option value="LT">Lithuania</option>
+          <option value="LU">Luxembourg</option>
+          <option value="MO">Macau</option>
+          <option value="MK">Macedonia, The Former Yugoslav Republic of</option>
+          <option value="MG">Madagascar</option>
+          <option value="MW">Malawi</option>
+          <option value="MY">Malaysia</option>
+          <option value="MV">Maldives</option>
+          <option value="ML">Mali</option>
+          <option value="MT">Malta</option>
+          <option value="MH">Marshall Islands</option>
+          <option value="MQ">Martinique</option>
+          <option value="MR">Mauritania</option>
+          <option value="MU">Mauritius</option>
+          <option value="YT">Mayotte</option>
+          <option value="MX">Mexico</option>
+          <option value="FM">Micronesia, Federated States of</option>
+          <option value="MD">Moldova, Republic of</option>
+          <option value="MC">Monaco</option>
+          <option value="MN">Mongolia</option>
+          <option value="MS">Montserrat</option>
+          <option value="MA">Morocco</option>
+          <option value="MZ">Mozambique</option>
+          <option value="MM">Myanmar</option>
+          <option value="NA">Namibia</option>
+          <option value="NR">Nauru</option>
+          <option value="NP">Nepal</option>
+          <option value="NL">Netherlands</option>
+          <option value="AN">Netherlands Antilles</option>
+          <option value="NC">New Caledonia</option>
+          <option value="NZ">New Zealand</option>
+          <option value="NI">Nicaragua</option>
+          <option value="NE">Niger</option>
+          <option value="NG">Nigeria</option>
+          <option value="NU">Niue</option>
+          <option value="NF">Norfolk Island</option>
+          <option value="MP">Northern Mariana Islands</option>
+          <option value="NO">Norway</option>
+          <option value="OM">Oman</option>
+          <option value="PK">Pakistan</option>
+          <option value="PW">Palau</option>
+          <option value="PA">Panama</option>
+          <option value="PG">Papua New Guinea</option>
+          <option value="PY">Paraguay</option>
+          <option value="PE">Peru</option>
+          <option value="PH">Philippines</option>
+          <option value="PN">Pitcairn</option>
+          <option value="PL">Poland</option>
+          <option value="PT">Portugal</option>
+          <option value="PR">Puerto Rico</option>
+          <option value="QA">Qatar</option>
+          <option value="RE">Reunion</option>
+          <option value="RO">Romania</option>
+          <option value="RU">Russian Federation</option>
+          <option value="RW">Rwanda</option>
+          <option value="KN">Saint Kitts and Nevis</option>
+          <option value="LC">Saint LUCIA</option>
+          <option value="VC">Saint Vincent and the Grenadines</option>
+          <option value="WS">Samoa</option>
+          <option value="SM">San Marino</option>
+          <option value="ST">Sao Tome and Principe</option>
+          <option value="SA">Saudi Arabia</option>
+          <option value="SN">Senegal</option>
+          <option value="SC">Seychelles</option>
+          <option value="SL">Sierra Leone</option>
+          <option value="SG">Singapore</option>
+          <option value="SK">Slovakia (Slovak Republic)</option>
+          <option value="SI">Slovenia</option>
+          <option value="SB">Solomon Islands</option>
+          <option value="SO">Somalia</option>
+          <option value="ZA">South Africa</option>
+          <option value="GS">South Georgia and the South Sandwich Islands</option>
+          <option value="ES">Spain</option>
+          <option value="LK">Sri Lanka</option>
+          <option value="SH">St. Helena</option>
+          <option value="PM">St. Pierre and Miquelon</option>
+          <option value="SD">Sudan</option>
+          <option value="SR">Suriname</option>
+          <option value="SJ">Svalbard and Jan Mayen Islands</option>
+          <option value="SZ">Swaziland</option>
+          <option value="SE">Sweden</option>
+          <option value="CH">Switzerland</option>
+          <option value="SY">Syrian Arab Republic</option>
+          <option value="TW">Taiwan, Province of China</option>
+          <option value="TJ">Tajikistan</option>
+          <option value="TZ">Tanzania, United Republic of</option>
+          <option value="TH">Thailand</option>
+          <option value="TG">Togo</option>
+          <option value="TK">Tokelau</option>
+          <option value="TO">Tonga</option>
+          <option value="TT">Trinidad and Tobago</option>
+          <option value="TN">Tunisia</option>
+          <option value="TR">Turkey</option>
+          <option value="TM">Turkmenistan</option>
+          <option value="TC">Turks and Caicos Islands</option>
+          <option value="TV">Tuvalu</option>
+          <option value="UG">Uganda</option>
+          <option value="UA">Ukraine</option>
+          <option value="AE">United Arab Emirates</option>
+          <option value="GB">United Kingdom</option>
+          <option value="US">United States</option>
+          <option value="UM">United States Minor Outlying Islands</option>
+          <option value="UY">Uruguay</option>
+          <option value="UZ">Uzbekistan</option>
+          <option value="VU">Vanuatu</option>
+          <option value="VE">Venezuela</option>
+          <option value="VN">Viet Nam</option>
+          <option value="VG">Virgin Islands (British)</option>
+          <option value="VI">Virgin Islands (U.S.)</option>
+          <option value="WF">Wallis and Futuna Islands</option>
+          <option value="EH">Western Sahara</option>
+          <option value="YE">Yemen</option>
+          <option value="YU">Yugoslavia</option>
+          <option value="ZM">Zambia</option>
+          <option value="ZW">Zimbabwe</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <div class="file is-info has-name">
+        <label class="file-label">
+          <input type="file"  (change)="imageUpload($event)"
+                 class="file-input btn btn-primary"  name="resume" style="display:none">
+          <img   id="prueba"
+               src="data:image/jpeg;base64,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"
+               alt="Alternate Text"  class="img-circle" style="max-width:20%; max-height:10%;"/>
+          <span class="file-cta">
+            <span class="file-icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label btn btn-primary ">
+              Subir img
+            </span>
+          </span>
+          <span class="file-name">
+          </span>
+        </label>
+      </div>
+    </div>
+    <input type="tel" id="phone" formControlName="phone">
+    <span id="valid-msg" class="hide  alert-success">✓ Valid</span>
+    <span id="error-msg" class="hide  alert-danger"></span>
+    <div class="form-group">
+      <label for="comment">Comment:</label>
+      <textarea class="form-control" rows="5" id="comment" formControlName="personalInfo"></textarea>
+    </div>
+    <app-knowledges [group]="profileForm"></app-knowledges>
+    <button [disabled]="!profileForm.valid" type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+
+

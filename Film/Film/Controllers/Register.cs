@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity.UI.Pages.Account.Internal;
+using Newtonsoft.Json;
 
 namespace Film.Areas.Identity.Pages.Account
 {
@@ -38,41 +39,47 @@ namespace Film.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
         }
+        //objeto dinamico
+        //public IActionResult Post([FromBody] object token)
+        //{
+        //    //Convierte el object que se pasa 
+        //    String t = ((dynamic)JObject.Parse(token.ToString())).token;
+
 
         //[BindProperty]
         //public InputModel Input { get; set; }
 
-        //public string ReturnUrl { get; set; }
+            //public string ReturnUrl { get; set; }
 
-        //public class InputModel
-        //{
-        //    [Required]
-        //    [EmailAddress]
-        //    [Display(Name = "Email")]
-        //    public string Email { get; set; }
+            //public class InputModel
+            //{
+            //    [Required]
+            //    [EmailAddress]
+            //    [Display(Name = "Email")]
+            //    public string Email { get; set; }
 
-        //    [Required]
-        //    [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        //    [DataType(DataType.Password)]
-        //    [Display(Name = "Password")]
-        //    public string Password { get; set; }
+            //    [Required]
+            //    [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            //    [DataType(DataType.Password)]
+            //    [Display(Name = "Password")]
+            //    public string Password { get; set; }
 
-        //    [DataType(DataType.Password)]
-        //    [Display(Name = "Confirm password")]
-        //    [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        //    public string ConfirmPassword { get; set; }
-        //}
+            //    [DataType(DataType.Password)]
+            //    [Display(Name = "Confirm password")]
+            //    [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            //    public string ConfirmPassword { get; set; }
+            //}
 
-        //public void OnGet(string returnUrl = null)
-        //{
-        //    ReturnUrl = returnUrl;
-        //}
-       
+            //public void OnGet(string returnUrl = null)
+            //{
+            //    ReturnUrl = returnUrl;
+            //}
+
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] User User)
         {
-           
-            
+
+
                 var user = new User { UserName = User.Email, Email = User.Email };
                 var result = await _userManager.CreateAsync(user, User.Password);
                 if (result.Succeeded)
@@ -94,7 +101,7 @@ namespace Film.Areas.Identity.Pages.Account
                 string host = HttpContext.Request.Host.ToString();
 
                 var route = Url.RouteUrl("ConfirmEmail", new { userId = user.Id, code = code });
-                host = "http://"+host + route;
+                host = "https://"+host + route;
 
 
                     await _emailSender.SendEmailAsync(User.Email, "Confirm your email",

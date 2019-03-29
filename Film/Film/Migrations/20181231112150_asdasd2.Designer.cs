@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Film.Migrations
 {
-    [DbContext(typeof(ApplicatonDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20181231112150_asdasd2")]
     partial class asdasd2
     {

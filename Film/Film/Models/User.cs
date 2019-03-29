@@ -11,12 +11,11 @@ namespace Film.Models
 {
     public class User : IdentityUser
     {
-
-        public string Nombre { get; set; }
-        public string Apellidos { get; set; }
-        public UserDates UserDates { get; set; }
+       
+       
+        public virtual UserDates UserDates { get; set; }
         public bool Admin { get; set; }
-        public bool Estado { get; set; }
+        public bool Status { get; set; }
         [NotMapped]
         [DefaultValue(false)]
         public bool RememberMe { get; set; }
@@ -28,6 +27,10 @@ namespace Film.Models
         public DateTime TokenExpiration { get; set; }
         [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
         public override string Email { get => base.Email; set => base.Email = value; }
+
+        
+
+        public List<UserKnowledges> UserKnowledges { get; set; }
 
     }
 }
