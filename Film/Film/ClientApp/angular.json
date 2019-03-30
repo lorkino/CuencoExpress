@@ -23,8 +23,8 @@
             "styles": [
               "src/css/bootstrap.min.css",
               "src/css/toastr.min.css",
-              "src/css/selectize.default.css",
-              "src/css/fontAwesome.css"
+              "src/css/selectize.default.css" ,            
+               "src/assets/fontawesome/css/all.css"
               // "node_modules/materialize-css/dist/css/materialize.css"
 
             ],

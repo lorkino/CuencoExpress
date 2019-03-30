@@ -22,6 +22,7 @@ import { FacebookLoginProvider } from "angular5-social-login";
 import { getAuthServiceConfigs } from "./socialloginConfig";
 import { NavMenuTopComponent } from './Components/nav-menu-top/nav-menu-top.component';
 import { JobComponent } from './Components/job/job.component';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,6 +41,7 @@ import { JobComponent } from './Components/job/job.component';
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    AngularFontAwesomeModule,
     ReactiveFormsModule,
     SocialLoginModule,
     RouterModule.forRoot([

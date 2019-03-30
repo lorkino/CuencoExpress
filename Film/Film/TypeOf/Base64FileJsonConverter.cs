@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace Film.TypeOf
 {
-   
+  
 public class Base64FileJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
             return objectType == typeof(string);
+
+
         }
 
 
@@ -31,7 +33,7 @@ public class Base64FileJsonConverter : JsonConverter
         //Because we are never writing out as Base64, we don't need this. 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteValue("");
+            writer.WriteValue(Convert.ToBase64String((byte[])value));
         }
     }
 }

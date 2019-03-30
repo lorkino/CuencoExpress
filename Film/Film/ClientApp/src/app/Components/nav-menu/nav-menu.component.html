@@ -7,9 +7,7 @@
     <span (click)="changeShow()" class="navbar-toggler-icon btn btn-dark"></span>
     <a class="navbar-brand ml-2 " [routerLink]='["/"]'>ServiceExpress</a>
   </div>
-  <button type="button" class="btn btn-default btn-lg">
-    <span class="glyphicon glyphicon-star" aria-hidden="true"></span> Star
-  </button>
+  
   <nav-menu-top></nav-menu-top>
 </nav>
 <div *ngIf="show" id="GoogleMenu">
@@ -59,20 +57,58 @@
     -webkit-user-select: text;">
 
     <div class="container">
-      <div class="row">
+      <div class="row mt-3">
         <div class="col-sm-4">
-          <!--<button type="button" class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-briefcase"></span> Briefcase
-          </button>-->
-         
+          <button (click)="changeShow()" [routerLink]='["/job"]' type="button" class="btn btn-outline-dark">
+            <i style="font-size:2em;" class="fas fa-business-time"></i>
+            <span>Trabajo</span>
+          </button>
+
         </div>
         <div class="col-sm-4">
-          One of three columns
+          <button [routerLink]='["/profile"]' (click)="changeShow()" type="button" class="btn btn-outline-dark">
+            <i style="font-size:2em;" class="fas fa-cog"></i>
+            <span>Ajustes</span>
+          </button>
         </div>
         <div class="col-sm-4">
-          One of three columns
+          <button [routerLink]='["/job"]' *ngIf="estaLogueado(); else notShow" (click)="changeShow()" type="button" class="btn btn-outline-dark" [routerLink]='["/job"]'>
+            <i style="font-size:2em;" class="fas fa-sign-out-alt"></i>
+            <span>Salir</span>
+          </button>
+          <button [routerLink]='["/login"]' #notShow type="button" class="btn btn-outline-dark" (click)="changeShow()" >
+            <i style="font-size:2em;" class="fas fa-sign-in-alt"></i>
+            <span>Entrar</span>
+          </button>
         </div>
       </div>
+
+      <div class="row mt-3">
+        <div class="col-sm-4">
+          <button (click)="changeShow()" [routerLink]='["/register"]' type="button" class="btn btn-outline-dark">
+            <i style="font-size:2em;" class="fas fa-user-plus"></i>
+            <span>Registro</span>
+          </button>
+
+        </div>
+        <div class="col-sm-4">
+          <button (click)="changeShow()" type="button" class="btn btn-outline-dark">
+            <i style="font-size:2em;" class="fas fa-cog"></i>
+            <span>Ajustes</span>
+          </button>
+        </div>
+        <div class="col-sm-4">
+          <button [routerLink]='["/job"]' *ngIf="estaLogueado(); else notShow" (click)="changeShow()" type="button" class="btn btn-outline-dark" [routerLink]='["/job"]'>
+            <i style="font-size:2em;" class="fas fa-sign-out-alt"></i>
+            <span>Salir</span>
+          </button>
+          <button [routerLink]='["/login"]' #notShow type="button" class="btn btn-outline-dark" (click)="changeShow()" [routerLink]='["/job"]'>
+            <i style="font-size:2em;" class="fas fa-sign-in-alt"></i>
+            <span>Entrar</span>
+          </button>
+        </div>
+      </div>
+
     </div>
 
   </div>
