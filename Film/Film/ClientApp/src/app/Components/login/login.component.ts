@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ExpressService } from '../.././express.service';
 import { User } from '../.././Models/user';
 import { Router } from "@angular/router";
@@ -13,9 +13,9 @@ import { AuthService, FacebookLoginProvider, GoogleLoginProvider } from 'angular
 })
 export class LoginComponent implements OnInit {
   profileForm = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl(''),
-    checkPassword: new FormControl('')
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required]),
+    checkPassword: new FormControl(false)
   });
   user: User;
  
@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
     
   }
   onSubmit() {
-   
+    
     this.expressService.getUser(this.profileForm.value.email, this.profileForm.value.password, this.profileForm.value.checkPassword != true ? false : this.profileForm.value.checkPassword ).subscribe(
       response => {
         this.user = response;

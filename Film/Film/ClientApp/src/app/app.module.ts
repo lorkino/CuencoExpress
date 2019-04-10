@@ -23,6 +23,8 @@ import { getAuthServiceConfigs } from "./socialloginConfig";
 import { NavMenuTopComponent } from './Components/nav-menu-top/nav-menu-top.component';
 import { JobComponent } from './Components/job/job.component';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,6 +46,7 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     AngularFontAwesomeModule,
     ReactiveFormsModule,
     SocialLoginModule,
+    InternationalPhoneNumberModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },

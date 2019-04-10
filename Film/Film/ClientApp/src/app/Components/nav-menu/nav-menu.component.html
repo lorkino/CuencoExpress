@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark" >
 
   <!--<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
 
@@ -7,37 +7,39 @@
     <span (click)="changeShow()" class="navbar-toggler-icon btn btn-dark"></span>
     <a class="navbar-brand ml-2 " [routerLink]='["/"]'>ServiceExpress</a>
   </div>
-  
+
   <nav-menu-top></nav-menu-top>
 </nav>
-<div *ngIf="show" id="GoogleMenu">
+<div *ngIf="show" id="GoogleMenu" >
   <div class="arrow-upB" style="
          border-color: transparent;
     border-style: dashed dashed solid;
-    border-width: 0 8.5px 8.5px;
+    border-width: 0 9.5px 9.5px;
     position: absolute;
-    left: 50px;
+    left: 30px;
     z-index: 1;
     height: 0;
     width: 0;
     -webkit-animation: gb__a .2s;
     animation: gb__a .2s;
     border-bottom-color: rgba(0,0,0,.5);
-    top: 162px;
+    top: 73px;
+    z-index:10;
   "></div>
   <div class="arrow-up" style="
       border-color: transparent;
     border-bottom-color: #fff;
     border-style: dashed dashed solid;
-    border-width: 0 8.5px 8.5px;
+    border-width: 0 9.5px 9.5px;
     position: absolute;
-    left: 50px;
-    top: 162px;
+    left: 30px;
+    top: 73px;
     z-index: 1;
     height: 0;
     width: 0;
     -webkit-animation: gb__a .2s;
     animation: gb__a .2s;
+    z-index:10;
   "></div>
   <div style="max-height:792px; height:596px; min-height: 196px;
     overflow-y: auto;
@@ -51,10 +53,12 @@
     overflow: hidden;
     position: absolute;
     left: 20px;
-    top: 170px;
+    top: 82px;
     -webkit-border-radius: 2px;
     border-radius: 2px;
-    -webkit-user-select: text;">
+    -webkit-user-select: text;
+    z-index:10;
+    ">
 
     <div class="container">
       <div class="row mt-3">
@@ -72,40 +76,32 @@
           </button>
         </div>
         <div class="col-sm-4">
-          <button [routerLink]='["/job"]' *ngIf="estaLogueado(); else notShow" (click)="changeShow()" type="button" class="btn btn-outline-dark" [routerLink]='["/job"]'>
+          <button [routerLink]='["/"]'  *ngIf="estaLogueado(); else notShow" (click)="changeShow();logout();" type="button" class="btn btn-outline-dark">
             <i style="font-size:2em;" class="fas fa-sign-out-alt"></i>
             <span>Salir</span>
           </button>
-          <button [routerLink]='["/login"]' #notShow type="button" class="btn btn-outline-dark" (click)="changeShow()" >
-            <i style="font-size:2em;" class="fas fa-sign-in-alt"></i>
-            <span>Entrar</span>
-          </button>
+          <ng-template #notShow>
+            <button [routerLink]='["/login"]' type="button" class="btn btn-outline-dark" (click)="changeShow()">
+              <i style="font-size:2em;" class="fas fa-sign-in-alt"></i>
+              <span>Entrar</span>
+            </button>
+          </ng-template>
         </div>
       </div>
 
       <div class="row mt-3">
         <div class="col-sm-4">
-          <button (click)="changeShow()" [routerLink]='["/register"]' type="button" class="btn btn-outline-dark">
+          <button *ngIf="!estaLogueado()" (click)="changeShow()" [routerLink]='["/register"]' type="button" class="btn btn-outline-dark">
             <i style="font-size:2em;" class="fas fa-user-plus"></i>
             <span>Registro</span>
           </button>
 
         </div>
         <div class="col-sm-4">
-          <button (click)="changeShow()" type="button" class="btn btn-outline-dark">
-            <i style="font-size:2em;" class="fas fa-cog"></i>
-            <span>Ajustes</span>
-          </button>
+
         </div>
         <div class="col-sm-4">
-          <button [routerLink]='["/job"]' *ngIf="estaLogueado(); else notShow" (click)="changeShow()" type="button" class="btn btn-outline-dark" [routerLink]='["/job"]'>
-            <i style="font-size:2em;" class="fas fa-sign-out-alt"></i>
-            <span>Salir</span>
-          </button>
-          <button [routerLink]='["/login"]' #notShow type="button" class="btn btn-outline-dark" (click)="changeShow()" [routerLink]='["/job"]'>
-            <i style="font-size:2em;" class="fas fa-sign-in-alt"></i>
-            <span>Entrar</span>
-          </button>
+
         </div>
       </div>
 
@@ -167,7 +163,6 @@
         <li *ngIf="estaLogueado()">
           <a [routerLink]='["/"]' (click)='logout()'>
             <span class="glyphicon glyphicon-log-out">
-
             </span> Logout
           </a>
         </li>

@@ -5,6 +5,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormGroup, FormControl } from '@angular/forms';
 import { error } from 'util';
+import { ok } from 'assert';
+
 //import { Ng2TelInputModule } from 'ng2-tel-input';
 declare var jquery: any;
 declare var $: any;
@@ -17,7 +19,7 @@ export class ProfileComponent implements OnInit {
 
   constructor(private accountService: ExpressService, private http: HttpClient, private generalService: GeneralService) { }
   imageUrl: any;
-
+  cCode: string;
 
   profileForm = new FormGroup({
     name: new FormControl(''),
@@ -41,8 +43,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
 
 
-    this.accountService.getProfile(this.profileForm).subscribe(response => {
-      
+    this.accountService.getProfile(this.profileForm).subscribe(response => {    
       console.log(response);
       if (response != null) {
         if (response.profileImgString) {
@@ -62,71 +63,24 @@ export class ProfileComponent implements OnInit {
       }
       console.log(this.profileForm);
     });
-    
 
-    $(function () {
-      var input = document.querySelector("#phone");
-     
-      var errorMsg = document.querySelector("#error-msg");
-      var validMsg = document.querySelector("#valid-msg");
 
-      // here, the index maps to the error code returned from getValidationError - see readme
-      var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
-      var iti =   (<any>window).intlTelInput(input, {
-                initialCountry: "auto",
-                utilsScript: "./utils.js",
-        geoIpLookup: function (success, failure) {
-          
-                  $.ajax({
-                    url: "https://api.ipdata.co/?api-key=test",
-                    type: 'get',
-                    processData: false,
-                    beforeSend: function (xhr) {
-                     
-                    },
-                    success: function (resp) {
-                      var countryCode = (resp && resp.country_code) ? resp.country_code : "";
-                      success(countryCode);                  
-                     (<any>document).getElementById("city").value = resp.city;
-                     (<any>document).getElementById("state").value = resp.region;
-                     (<any>document).getElementById("zip").value = resp.postal;                     
-                    },
-                    error: function (xhr, status, error) {
-                      console.log(xhr);
-                    }
-                  });
-                },
-              });
-      console.log(iti);
-      var reset = function () {
-       
-        input.classList.remove("error");
-        errorMsg.innerHTML = "";
-        errorMsg.classList.add("hide");
-        validMsg.classList.add("hide");
-      };
+   
+   //this.cCode = countryCode.toLowerCase();
 
-      // on blur: validate
-      input.addEventListener('blur', function () {
-        reset();
-        if ((<any>input).value.trim()) {
-          if (iti.isValidNumber()) {
-            validMsg.classList.remove("hide");
-          } else {
-            input.classList.add("error");
-            var errorCode = iti.getValidationError();
-            errorMsg.innerHTML = errorMap[errorCode];
-            errorMsg.classList.remove("hide");
-          }
-        }
-      });
-
-      // on keyup / change flag: reset
-      input.addEventListener('change', reset);
-      input.addEventListener('keyup', reset);
-
+    const req = this.http.get<any>('https://api.ipdata.co/?api-key=test');
+    // 0 requests made - .subscribe() not called.
+    req.subscribe((response)=>{
+      (<any>document).getElementById("city").value = response.city;
+      (<any>document).getElementById("state").value = response.region;
+      (<any>document).getElementById("zip").value = response.postal;
+      this.cCode = response.country_code.toLowerCase();
+        console.log(this.cCode);    
     });
+    
   }
+
+
   ngAfterViewInit() {
 
   }

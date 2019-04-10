@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormControl,FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from '../../Models/user';
 import { ExpressService } from '../.././express.service';
 import { Router } from '@angular/router';
@@ -10,16 +10,25 @@ declare var toastr: any;
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+
+ formGroup = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required]),
+      password2: new FormControl('', [Validators.required])
+    });
+  passwordsAreEqual: boolean;
   constructor(private fb: FormBuilder,
     private accountService: ExpressService,
     private router: Router) { }
-  formGroup: FormGroup;
+ 
   ngOnInit() {
-    this.formGroup = this.fb.group({
-      email: '',
-      password: '',
-      password2: '',
-    });
+   
+  }
+
+   equalPassword() {
+     let password = this.formGroup.controls['password'].value;
+     let repeatPassword = this.formGroup.controls['password2'].value;
+     this.passwordsAreEqual = ((password == repeatPassword) && password.length > 0 && repeatPassword.length > 0);
   }
 
   loguearse() {
@@ -41,23 +50,9 @@ export class RegisterComponent implements OnInit {
   }
 
   manejarError(error) {
-    if (error && error.error) {
-      toastr.error(error.error[0].description, 'Error:');
-    }
+   
   }
 
-  MatchPassword() {
-    if (this.formGroup.value.password2 != this.formGroup.value.password && this.formGroup.value.password2 != "") {
-      document.getElementById("noMatch").style.display = "block";
-      var inputValue = <HTMLInputElement>document.getElementsByClassName("btn btn-primary")[0];
-      inputValue.disabled = true;
 
-    }
-    else if (this.formGroup.value.password != "" && this.formGroup.value.password2 != "" && this.formGroup.value.email != ""){
-      document.getElementById("noMatch").style.display = "none";
-      var inputValue = <HTMLInputElement>document.getElementsByClassName("btn btn-primary")[0];
-      inputValue.disabled = false;
-    }
-  }
 
 }

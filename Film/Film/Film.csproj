@@ -73,6 +73,7 @@
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="ClientApp\src\assets\fontawesome\" />
+    <Folder Include="ClientApp\src\assets\socialbuttons\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 

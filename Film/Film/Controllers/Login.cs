@@ -68,7 +68,7 @@ namespace Film.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
         [HttpPost]
-        public async Task<JsonResult> Login([FromBody] User user)
+        public async Task<IActionResult> Login([FromBody] User user)
         {
 
             //// This doesn't count login failures towards account lockout
@@ -97,7 +97,7 @@ namespace Film.Areas.Identity.Pages.Account
                         Token = token.Item1,
                         TokenExpiration = token.Item2
                     };
-                    return Json(userSecure);
+                    return Ok(userSecure);
                 }
 
                 //if (result.RequiresTwoFactor)
@@ -106,13 +106,13 @@ namespace Film.Areas.Identity.Pages.Account
                 //}
                 if (result.IsLockedOut)
                 {
-                    return Json("Blocked user");
+                    return BadRequest("Blocked user");
                 }
             }
 
 
             //// If we got this far, something failed, redisplay form
-            return Json("Incorrect User");
+            return BadRequest("Usuario incorrecto");
         }
     }
 }

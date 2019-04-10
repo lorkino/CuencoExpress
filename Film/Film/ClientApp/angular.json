@@ -23,10 +23,11 @@
             "styles": [
               "src/css/bootstrap.min.css",
               "src/css/toastr.min.css",
-              "src/css/selectize.default.css" ,            
-               "src/assets/fontawesome/css/all.css"
+              "src/css/selectize.default.css",
+              "src/assets/fontawesome/css/all.css",
+              //"src/assets/socialbuttons/boostrap-social.css"
               // "node_modules/materialize-css/dist/css/materialize.css"
-
+              "src/css/bootstrap-social.css"
             ],
             "scripts": [
               "src/js/jquery.min.js",
