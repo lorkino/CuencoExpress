@@ -34,8 +34,7 @@ namespace Film.Models
         [JsonConverter(typeof(Base64FileJsonConverter))]
         public byte[] ProfileImg { get; set; }
 
-        [NotMapped]
-        public string ProfileImgString { get; set; }
+       
         public string PersonalInfo { get; set; }
         public virtual User User { get; set; }
 

@@ -8,7 +8,7 @@
     <a class="navbar-brand ml-2 " [routerLink]='["/"]'>ServiceExpress</a>
   </div>
 
-  <nav-menu-top></nav-menu-top>
+  <nav-menu-top *ngIf="estaLogueado()"></nav-menu-top>
 </nav>
 <div *ngIf="show" id="GoogleMenu" >
   <div class="arrow-upB" style="
@@ -39,7 +39,7 @@
     width: 0;
     -webkit-animation: gb__a .2s;
     animation: gb__a .2s;
-    z-index:10;
+    z-index:11;
   "></div>
   <div style="max-height:792px; height:596px; min-height: 196px;
     overflow-y: auto;

@@ -17,28 +17,16 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', [Validators.required]),
     checkPassword: new FormControl(false)
   });
-  user: User;
  
   constructor(private expressService: ExpressService, private router: Router, private socialAuthService: AuthService ) {
-    this.user = new User();
 
   }
 
   ngOnInit() {
     
   }
-  onSubmit() {
-    
-    this.expressService.getUser(this.profileForm.value.email, this.profileForm.value.password, this.profileForm.value.checkPassword != true ? false : this.profileForm.value.checkPassword ).subscribe(
-      response => {
-        this.user = response;
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('tokenExpiration', response.tokenExpiration);
-        this.router.navigate(['/']);
-      }
-    );
-    
-    console.log(this.user);
+  onSubmit() { 
+    this.expressService.login(this.profileForm.value.email, this.profileForm.value.password, this.profileForm.value.checkPassword != true ? false : this.profileForm.value.checkPassword);  
   }
 
   public facebookLogin() {

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ExpressService } from '../.././express.service';
+import { User } from '../../Models/user';
 
 @Component({
   selector: 'nav-menu-top',
@@ -6,10 +8,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nav-menu-top.component.css']
 })
 export class NavMenuTopComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
+  user: User;
+  constructor(private accountService: ExpressService) {
+    this.user = this.getUser();
   }
 
+  ngOnInit() {
+    console.log("CASPA");
+    console.log(this.accountService.getUser());
+
+  }
+
+  getUser() {
+    return this.accountService.getUser();
+  }
 }

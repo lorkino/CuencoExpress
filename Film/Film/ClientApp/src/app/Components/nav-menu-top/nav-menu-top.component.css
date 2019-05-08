@@ -12,3 +12,9 @@
 .pagination > li {
   margin-right: 10px;
 }
+
+@media screen and (max-width: 600px) {
+  .navMenuTop {
+    display: none;
+  }
+}

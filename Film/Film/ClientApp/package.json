@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --open --port=4216",
+    "start": "ng serve --open --port=4217",
     "build": "ng build ",
     "build:ssr": "npm run build -- --app=ssr --output-hashing=media",
     "test": "ng test",

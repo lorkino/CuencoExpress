@@ -26,10 +26,7 @@ namespace Film.Models
         [NotMapped]
         public DateTime TokenExpiration { get; set; }
         [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
-        public override string Email { get => base.Email; set => base.Email = value; }
-
-        
-
+        public override string Email { get => base.Email; set => base.Email = value; }      
         public List<UserKnowledges> UserKnowledges { get; set; }
 
     }

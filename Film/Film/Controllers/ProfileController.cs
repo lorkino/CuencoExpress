@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Film.Models;
+using Film.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace Film.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   [Authorize]
+    [Authorize]
     public class ProfileController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,6 +23,21 @@ namespace Film.Controllers
         public ProfileController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        [HttpGet]
+        [Route("getMe")]
+        public async Task<JsonResult> GetMe()
+        {
+            var userName = User.Identity.Name;
+            User userComplete = await _context.Users.Where(a => a.Email == userName).Include(a => a.UserDates).Include(b => b.UserKnowledges).ThenInclude(post => post.Knowledges).FirstOrDefaultAsync();
+
+            //llamamos al token de acceso
+            Tuple<string, DateTime> token = Film.Controllers.Account.BuildToken(userComplete);
+            userComplete.Token = token.Item1;
+            userComplete.TokenExpiration = token.Item2;
+            ViewUser userSecure = userComplete;
+            return Json(userSecure);
         }
 
         [HttpPost]    
@@ -71,7 +87,7 @@ namespace Film.Controllers
                 Debug.Print(e.ToString());
 
             }
-            return Json("Ok");
+            return Json("Su perfil se ha actualizado correctamente");
 
         }
         [HttpGet]
@@ -80,15 +96,15 @@ namespace Film.Controllers
             var userName = User.Identity.Name;
             User user = await _context.Users.Where(a => a.Email == userName).Include(a => a.UserDates).FirstOrDefaultAsync();
             await _context.SaveChangesAsync();
-            UserDates userDates = user.UserDates;
-            if(userDates!=null)
-            userDates.ProfileImgString = Convert.ToBase64String(userDates?.ProfileImg);
+           // UserDates userDates = user.UserDates;
+            //if(userDates!=null)
+            //userDates.ProfileImgString = Convert.ToBase64String(userDates?.ProfileImg);
 
             var searchRequest = await MyGlobals.elasticClient.SearchAsync<User>(s =>
             s.Query(q => q
                 .Match(c=>c.Field(p=>p.UserKnowledges.First().Knowledges.Value).Query("Arquímedes"))
                 ).AllTypes().Index("people"));
-            return Json(userDates);
+            return Json(user.UserDates);
 
 
         }

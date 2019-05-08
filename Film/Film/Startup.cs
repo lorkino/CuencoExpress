@@ -36,7 +36,7 @@ namespace Film
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMvc().AddJsonOptions(opt =>
              {
-                 opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+                 opt.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.None;
              });
 
             // In production, the Angular files will be served from this directory

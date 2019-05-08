@@ -41,28 +41,36 @@ export class ProfileComponent implements OnInit {
 
   
   ngOnInit() {
+    
+    //this.profileForm.setValue(this.accountService.user.userDates);
+    this.profileForm.get('name').setValue(this.accountService.user.userDates.name);
+    this.profileForm.get('surname').setValue(this.accountService.user.userDates.surname);
+    this.profileForm.get('state').setValue(this.accountService.user.userDates.state);
+    this.profileForm.get('city').setValue(this.accountService.user.userDates.city);
+    this.profileForm.get('address1').setValue(this.accountService.user.userDates.address1);
+    this.profileForm.get('address2').setValue(this.accountService.user.userDates.address2);
+    this.profileForm.get('postalCode').setValue(this.accountService.user.userDates.postalCode);
+    this.profileForm.get('country').setValue(this.accountService.user.userDates.country);
+    this.profileForm.get('phone').setValue(this.accountService.user.userDates.phone);
+    this.profileForm.get('personalInfo').setValue(this.accountService.user.userDates.personalInfo);
+    this.profileForm.get('profileImg').setValue(this.accountService.user.userDates.profileImg);
+    (<HTMLImageElement>document.getElementById("prueba")).src = this.accountService.user.userDates.profileImg;
 
-
-    this.accountService.getProfile(this.profileForm).subscribe(response => {    
-      console.log(response);
-      if (response != null) {
-        if (response.profileImgString) {
-          (<any>document).getElementById("prueba").src = "data:image/jpeg;base64," + response.profileImgString;
-          //Para enviar el objeto response directamente necesitamos añadir y borrar propiedades
-          response.profileImg = response.profileImgString;
-        }
-        response.knowledges = "";
-        response.explanation = "";
-        response.guidId = "";
-        delete response.$id;
-        delete response.id;
-        delete response.score;
-        delete response.user;
-        delete response.profileImgString;
-        this.profileForm.setValue(response);
-      }
-      console.log(this.profileForm);
-    });
+    //this.accountService.getProfile().subscribe(response => {    
+    //  console.log(response);
+    //  if (response != null) {      
+    //    response.knowledges = "";
+    //    response.explanation = "";
+    //    response.guidId = "";
+    //    delete response.$id;
+    //    delete response.id;
+    //    delete response.score;
+    //    delete response.user;
+    //    delete response.profileImgString;
+    //    this.profileForm.setValue(response);
+    //  }
+    //  console.log(this.profileForm);
+    //});
 
 
    

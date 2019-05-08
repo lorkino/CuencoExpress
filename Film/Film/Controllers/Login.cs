@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Film.Controllers;
 using Film.Models;
+using Film.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Film.Areas.Identity.Pages.Account
 {
@@ -18,11 +20,12 @@ namespace Film.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private UserManager<User> _userManager;
-
-        public LoginController(SignInManager<User> signInManager, UserManager<User> userManager)
+        private readonly ApplicationDbContext _context;
+        public LoginController(SignInManager<User> signInManager, UserManager<User> userManager, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _context = context;
         }
 
         //[BindProperty]
@@ -76,27 +79,22 @@ namespace Film.Areas.Identity.Pages.Account
 
 
             var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, lockoutOnFailure: true);
-            User userComplete = await _userManager.FindByEmailAsync(user.Email);
+            
 
 
-
-            if (userComplete != null)
-            {
+            
                 if (result.Succeeded)
                 {
+                   
+               
+                    User userComplete = await _context.Users.Where(a => a.Email == user.Email).Include(a => a.UserDates).Include(b=>b.UserKnowledges).ThenInclude(post => post.Knowledges).FirstOrDefaultAsync();
+
                     //llamamos al token de acceso
                     Tuple<string, DateTime> token = Film.Controllers.Account.BuildToken(user);
-                    User userSecure = new User
-                    {
-                        Admin = userComplete.Admin,
-                        Email = userComplete.Email,
-                        EmailConfirmed = userComplete.EmailConfirmed,
-                        UserDates = userComplete.UserDates,
-                        AccessFailedCount = userComplete.AccessFailedCount,
-                        RememberMe = userComplete.RememberMe,
-                        Token = token.Item1,
-                        TokenExpiration = token.Item2
-                    };
+                    userComplete.Token = token.Item1;
+                    userComplete.TokenExpiration = token.Item2;
+                    ViewUser userSecure = userComplete;
+                  
                     return Ok(userSecure);
                 }
 
@@ -108,7 +106,7 @@ namespace Film.Areas.Identity.Pages.Account
                 {
                     return BadRequest("Blocked user");
                 }
-            }
+            
 
 
             //// If we got this far, something failed, redisplay form
