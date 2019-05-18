@@ -25,6 +25,7 @@ import { JobComponent } from './Components/job/job.component';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen.component';
+import { CardJobComponent } from './Components/card-job/card-job.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { LoadingScreenComponent } from './components/loading-screen/loading-scre
     KnowledgesComponent,
     NavMenuTopComponent,
     JobComponent,
-    LoadingScreenComponent
+    LoadingScreenComponent,
+    CardJobComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

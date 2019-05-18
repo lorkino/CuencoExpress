@@ -29,7 +29,7 @@ namespace Film.Controllers
 
         public static ElasticClient elasticClient = new ElasticClient(settings);
 
-        public static void SearchByTags(List<Knowledges> knowledges) {
+        public static  List<User> SearchByTags(List<Knowledges> knowledges) {
 
             var searchRequest1 = elasticClient.Search<User>(s =>
              s.Query(q => q
@@ -59,8 +59,7 @@ namespace Film.Controllers
             };
             var searchResponse = elasticClient.Search<User>(searchRequest);
 
-           var listUser = searchResponse.Documents.Distinct().ToList();
-           
+            return searchResponse.Documents.Distinct().ToList();
 
         }
     }

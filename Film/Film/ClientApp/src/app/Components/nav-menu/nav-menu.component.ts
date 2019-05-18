@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ExpressService } from '../.././express.service';
 import { Router } from '@angular/router';
 
@@ -12,7 +12,8 @@ export class NavMenuComponent {
   constructor(private accountService: ExpressService,
     private router: Router) { }
 
-  public show: boolean=false;
+  public show: boolean = false;
+  private wasInside = false;
 
   isExpanded = false;
   changeShow() {
@@ -33,6 +34,19 @@ export class NavMenuComponent {
 
   estaLogueado() {
     return this.accountService.estaLogueado();
+  }
+
+  @HostListener('click')
+  clickInside() {
+    this.wasInside = true;
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickout() {  
+    if (!this.wasInside) {
+      this.show = false;
+    }
+    this.wasInside = false;
   }
 
 }

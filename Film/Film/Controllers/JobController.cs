@@ -25,7 +25,8 @@ namespace Film.Controllers
         {
             _context = context;
         }
-
+        //añadimos nuevos conocieminetos a la base de datos
+        //Añadimos al trabajo sus conocimientos
         [HttpPost]
         public async Task<IActionResult> SaveKnowledges([FromBody] List<Knowledges> knowledges)
         {
@@ -34,8 +35,7 @@ namespace Film.Controllers
                 var userName = User.Identity.Name;
                 User user = await _context.Users.Where(a => a.Email == userName).Include(a => a.UserKnowledges).FirstOrDefaultAsync();
 
-                Job job = await _context.Job.Where(a => a.UserCreator.UserName == user.UserName).OrderByDescending(a=>a.CreatedDate).Include(a => a.JobKnowledges).FirstOrDefaultAsync();
-                MyGlobals.SearchByTags(knowledges.Where(a=>a.Value!=null).ToList());
+                Job job = await _context.Job.Where(a => a.UserCreator.UserName == user.UserName).OrderByDescending(a => a.CreatedDate).Include(a => a.JobKnowledges).FirstOrDefaultAsync();
                 //conocimientos existentes
                 var eKnowledges = _context.Knowledges.ToList();
                 var newItems = knowledges.Where(x => !eKnowledges.Any(y => x.Value == y.Value)).ToList();
@@ -57,7 +57,7 @@ namespace Film.Controllers
                 });
                 job.JobKnowledges = ListjobKnowledges;
                 await _context.SaveChangesAsync();
-                
+
             }
             catch (Exception e)
             {
@@ -82,11 +82,22 @@ namespace Film.Controllers
             job.UserCreator = user;
             _context.Job.Add(job);
             await _context.SaveChangesAsync();
+
+            //MyGlobals.SearchByTags(knowledges.Where(a => a.Value != null).ToList());
+
+
             return Ok();
 
 
         }
-       
-     
+
+        public async Task<JsonResult> Jobs()
+        {
+            var userName = User.Identity.Name;
+            User user = await _context.Users.Where(a => a.Email == userName).FirstOrDefaultAsync();
+            List<Job> jobs = await _context.Job.Where(a => a.UserCreator == user).ToListAsync();
+            return Json(jobs);
+        }
+
     }
 }

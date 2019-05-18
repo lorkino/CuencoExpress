@@ -12,6 +12,7 @@ declare var $: any;
 })
 export class JobComponent implements OnInit {
   public jobForm: FormGroup;
+  public helpTextImg: boolean = false;
   constructor(private formBuilder: FormBuilder, private expressService: ExpressService, private http: HttpClient) {
     this.jobForm = this.formBuilder.group({
       tittle: new FormControl('', [Validators.required, Validators.maxLength(25)]),
@@ -60,7 +61,14 @@ export class JobComponent implements OnInit {
 
   detectFiles(event) {
     let files = event.target.files;
+    if (event.target.files.length > 3) {
+      this.helpTextImg = true;
+      return 0;
+    }
     if (files) {
+      while (0 !== this.jobImages.length) {
+        this.jobImages.removeAt(0);
+      }
       for (let file of files) {
         let reader = new FileReader();
         reader.onload = (e: any) => {
@@ -70,7 +78,7 @@ export class JobComponent implements OnInit {
         }
         reader.readAsDataURL(file);
       }
-      console.log(this.jobForm.get('jobImages'));
+      this.helpTextImg = false;
     }
   }
 
@@ -79,7 +87,7 @@ export class JobComponent implements OnInit {
   submit() {
     this.jobForm.get('knowledges').setValue((<any>document.getElementById("knowledges")).value);
     this.jobForm.get('explanation').setValue((<any>document.getElementById("explanation")).value);
-    console.log(this.jobForm);
+   
 
     var knowledges = this.jobForm.value.knowledges.split(" - ");
     var explanations = this.jobForm.value.explanation.split(" - ");
