@@ -23,8 +23,8 @@ namespace Film.Models
         public string Description { get; set; }
         public string Tittle { get; set; }
         public List<JobKnowledges> JobKnowledges { get; set; }
-        [JsonConverter(typeof(Base64FileJsonConverter))]
-        public byte[] JobImages { get; set; }
+      //  [JsonConverter(typeof(Base64FileJsonConverter))]
+        public List<Images> JobImages { get; set; }
         public DateTime CreatedDate { get; set; }
         public Job()
         {

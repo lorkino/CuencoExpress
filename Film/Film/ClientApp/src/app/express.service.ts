@@ -83,7 +83,15 @@ export class ExpressService {
   }
 
   getProfile(): Observable<any> {
-    return this.http.get<any>("api/profile");
+    return this.http.get<any>("api/profile"); 
+  }
+
+  getJobsSize():Observable<any> {
+    return this.http.get<any>("api/job/jobsnumber");
+  }
+
+  getJobs():Observable<any> {
+    return this.http.get<any>("api/job/jobs");
   }
 
   obtenerToken(): string {

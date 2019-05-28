@@ -8,6 +8,6 @@ namespace Film.Models
         public string Id { get; set; }
         [JsonConverter(typeof(Base64FileJsonConverter))]
         public byte[] Img { get; set; }
-        public virtual User Job { get; set; }
+
     }
 }

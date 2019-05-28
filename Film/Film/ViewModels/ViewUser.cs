@@ -24,7 +24,8 @@ namespace Film.ViewModels
 
         public static implicit operator ViewUser(User v)
         {
-
+            if (v == null)
+                return null;
             ViewUser userDates = new ViewUser
                 {
                     Admin = v.Admin,
@@ -36,8 +37,8 @@ namespace Film.ViewModels
                     Email = v.Email,
                     EmailConfirmed = v.EmailConfirmed,
                     AccessFailedCount = v.AccessFailedCount,
-                    UserDates = (ViewUserDates)v.UserDates,
-                    Knowledges = v.UserKnowledges.Select(a => (ViewKnowledge)a.Knowledges)?.ToList()
+                    UserDates = (ViewUserDates)v?.UserDates,
+                    Knowledges = v.UserKnowledges?.Select(a => (ViewKnowledge)a.Knowledges)?.ToList()
 
             };
              return userDates;

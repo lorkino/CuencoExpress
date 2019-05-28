@@ -4,14 +4,16 @@ using Film.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Film.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicatonDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190522110026_ddasda")]
+    partial class ddasda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,6 +45,8 @@ namespace Film.Migrations
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<string>("Description");
+
+                    b.Property<byte[]>("JobImages");
 
                     b.Property<short>("Status");
 
@@ -305,8 +309,8 @@ namespace Film.Migrations
 
             modelBuilder.Entity("Film.Models.Images", b =>
                 {
-                    b.HasOne("Film.Models.Job")
-                        .WithMany("JobImages")
+                    b.HasOne("Film.Models.User", "Job")
+                        .WithMany()
                         .HasForeignKey("JobId");
                 });
 

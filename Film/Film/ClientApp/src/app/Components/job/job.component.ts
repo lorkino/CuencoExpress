@@ -3,6 +3,8 @@ import { KnowledgesComponent } from '../knowledges/knowledges.component';
 import { FormGroup, FormControl, Validators, FormBuilder, FormArray } from '@angular/forms';
 import { ExpressService } from '../.././express.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Job } from '../../Models/Job';
+import { forkJoin } from 'rxjs';
 declare var jquery: any;
 declare var $: any;
 @Component({
@@ -13,6 +15,9 @@ declare var $: any;
 export class JobComponent implements OnInit {
   public jobForm: FormGroup;
   public helpTextImg: boolean = false;
+  config: any;
+  jobs: Job[];
+
   constructor(private formBuilder: FormBuilder, private expressService: ExpressService, private http: HttpClient) {
     this.jobForm = this.formBuilder.group({
       tittle: new FormControl('', [Validators.required, Validators.maxLength(25)]),
@@ -23,6 +28,28 @@ export class JobComponent implements OnInit {
       jobImages: this.formBuilder.array([]),
       jobKnowledges: this.formBuilder.array([])
     });
+    
+
+   
+
+    let jobs = this.expressService.getJobs();
+    let jobsSize = this.expressService.getJobsSize();
+
+      forkJoin([jobsSize, jobs]).subscribe(results => {
+        // results[0] is our character
+        // results[1] is our character homeworld
+        console.log(results[0]);
+        console.log(results[1]); 
+        this.config = {
+          itemsPerPage: 5,
+          currentPage: 1,
+          totalItems: results[0]
+        };
+        this.jobs = results[1];
+        
+      });
+
+ 
   }
 
 
@@ -45,6 +72,10 @@ export class JobComponent implements OnInit {
     });
   }
 
+  pageChanged(event) {
+    this.config.currentPage = event;
+  }
+
   // We will create multiple form controls inside defined form controls photos.
   createItem(data): FormGroup {
     return this.formBuilder.group(data);
@@ -58,7 +89,7 @@ export class JobComponent implements OnInit {
   get jobKnowledges(): FormArray {
     return this.jobForm.get('jobKnowledges') as FormArray;
   };
-
+   
   detectFiles(event) {
     let files = event.target.files;
     if (event.target.files.length > 3) {
@@ -107,7 +138,6 @@ export class JobComponent implements OnInit {
 
     this.expressService.setJob(this.jobForm.value).subscribe(response => {
       
-
       console.log(response);
 
       this.expressService.setKnowledgesJob(knowledgeObject).subscribe(response => {

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Film.Models;
+using Film.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,8 @@ namespace Film.Controllers
                 var userName = User.Identity.Name;
                 User user = await _context.Users.Where(a => a.Email == userName).Include(a => a.UserKnowledges).FirstOrDefaultAsync();
 
-                Job job = await _context.Job.Where(a => a.UserCreator.UserName == user.UserName).OrderByDescending(a => a.CreatedDate).Include(a => a.JobKnowledges).FirstOrDefaultAsync();
+               
+                     Job job = await _context.Job.Where(a => a.UserCreator.UserName == user.UserName).OrderByDescending(a => a.CreatedDate).Include(a => a.JobKnowledges).FirstOrDefaultAsync();
                 //conocimientos existentes
                 var eKnowledges = _context.Knowledges.ToList();
                 var newItems = knowledges.Where(x => !eKnowledges.Any(y => x.Value == y.Value)).ToList();
@@ -90,12 +92,22 @@ namespace Film.Controllers
 
 
         }
-
+        [HttpGet]
         public async Task<JsonResult> Jobs()
         {
             var userName = User.Identity.Name;
             User user = await _context.Users.Where(a => a.Email == userName).FirstOrDefaultAsync();
-            List<Job> jobs = await _context.Job.Where(a => a.UserCreator == user).ToListAsync();
+            List<Job> jobs =  await _context.Job.Where(a => a.UserCreator == user).OrderByDescending(a => a.CreatedDate).Include(a=>a.JobKnowledges).ThenInclude(post => post.Knowledges).Include(a=>a.UserWorker).ToListAsync();
+            List<ViewJob> job = jobs.Select(a => (ViewJob)a).ToList();
+            return Json(job);
+        }
+        //cantidad de jobs
+        [HttpGet]
+        public async Task<JsonResult> JobsNumber()
+        {
+            var userName = User.Identity.Name;
+            User user = await _context.Users.Where(a => a.Email == userName).FirstOrDefaultAsync();
+            int jobs = await _context.Job.Where(a => a.UserCreator == user).CountAsync();
             return Json(jobs);
         }
 

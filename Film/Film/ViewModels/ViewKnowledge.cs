@@ -12,6 +12,8 @@ namespace Film.ViewModels
 
         public static explicit operator ViewKnowledge(Knowledges v)
         {
+            if (v == null)
+                return null;
             ViewKnowledge kwnoledge = new ViewKnowledge
             {
                 value= v.Value,

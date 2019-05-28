@@ -27,6 +27,8 @@ namespace Film.ViewModels
 
         public static explicit operator ViewUserDates(UserDates v)
         {
+            if (v==null)
+            return null;
             ViewUserDates userDates = new ViewUserDates
             {
                 Address1 = v.Address1,

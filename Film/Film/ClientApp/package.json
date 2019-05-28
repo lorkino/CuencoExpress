@@ -37,6 +37,7 @@
     "materialize-css": "^1.0.0-rc.2",
     "ng2-izitoast": "^2.0.0",
     "ngx-international-phone-number": "^1.0.4",
+    "ngx-pagination": "^3.2.1",
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.0.0-rc.0",
     "toastr": "^2.1.4",

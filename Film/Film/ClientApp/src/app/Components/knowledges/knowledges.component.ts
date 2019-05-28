@@ -13,7 +13,7 @@ declare var $: any;
 export class KnowledgesComponent implements OnInit {
   @Input() group: FormGroup;
   @Input() public titulo: string;
-
+  @Input() public pantalla: string;
   constructor(private accountService: ExpressService, private http: HttpClient) { }
 
   ngOnInit() {
@@ -42,6 +42,8 @@ export class KnowledgesComponent implements OnInit {
       });
     });
 
+    //si venimos del perfil
+    if(this.pantalla=="profile")
     Array.from(this.accountService.user.knowledges).forEach(function (element: any) {
       $(function () {
         if (element.value != "")
