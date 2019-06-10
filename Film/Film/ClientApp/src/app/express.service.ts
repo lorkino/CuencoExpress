@@ -94,6 +94,13 @@ export class ExpressService {
     return this.http.get<any>("api/job/jobs");
   }
 
+  getOffersSize(): Observable<any> {
+    return this.http.get<any>("api/job/offersnumber");
+  }
+
+  getOffers(): Observable<any> {
+    return this.http.get<any>("api/job/offers");
+  }
   obtenerToken(): string {
     return localStorage.getItem("token");
   }

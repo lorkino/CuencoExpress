@@ -18,18 +18,35 @@ using System.Text;
 using Newtonsoft.Json;
 using Nest;
 using Film.SignalR;
+using Microsoft.Extensions.Logging;
 
 namespace Film
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public ILogger<Startup> Logger { get; set; }
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            Logger = logger;
+
+            //the following line gets printed to my debug output window:
+            logger.LogDebug("this is a debug message");
+
         }
 
+        private ILoggerFactory GetLoggerFactory()
+        {
+            IServiceCollection serviceCollection = new ServiceCollection();
+            serviceCollection.AddLogging(builder => builder
+                .AddDebug()
+                .AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Debug));
+            return serviceCollection.BuildServiceProvider()
+                    .GetService<ILoggerFactory>();
+        }
         public IConfiguration Configuration { get; }
 
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -113,7 +130,9 @@ namespace Film
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddDbContextPool<ApplicationDbContext>(
              optionsAction => optionsAction.UseSqlServer(Configuration.GetConnectionString("MyDatabase")));
-           
+            services.AddDbContextPool<ApplicationDbContext>(
+              optionsAction => optionsAction.UseLoggerFactory(GetLoggerFactory()));
+
 
         }
 

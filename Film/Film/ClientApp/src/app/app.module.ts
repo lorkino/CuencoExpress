@@ -27,6 +27,10 @@ import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
 import { LoadingScreenComponent } from './components/loading-screen/loading-screen.component';
 import { CardJobComponent } from './Components/card-job/card-job.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { CardOffersComponent } from './Components/card-offers/card-offers.component';
+import { OffersComponent } from './Components/offers/offers.component';
+
+
 
 
 @NgModule({
@@ -43,7 +47,11 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NavMenuTopComponent,
     JobComponent,
     LoadingScreenComponent,
-    CardJobComponent
+    CardJobComponent,
+    CardOffersComponent,
+    OffersComponent
+
+
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -61,6 +69,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'profile', component: ProfileComponent, canActivate: [AuthGuardService] },
+      { path: 'offer', component: OffersComponent, canActivate: [AuthGuardService] },
       { path: 'job', component: JobComponent, canActivate: [AuthGuardService] }
     ])
   ],

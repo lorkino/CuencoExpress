@@ -28,6 +28,9 @@ namespace Film.Models
         [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
         public override string Email { get => base.Email; set => base.Email = value; }      
         public List<UserKnowledges> UserKnowledges { get; set; }
-
+       
+        public virtual List<Job> JobsWorker { get; set; }
+        public virtual List<JobPreWorker> JobsPreworker { get; set; }
+        public virtual List<Job> JobsCreator { get; set; }
     }
 }

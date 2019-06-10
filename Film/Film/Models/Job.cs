@@ -16,9 +16,12 @@ namespace Film.Models
         public string Id { get; set; }
         public virtual User UserCreator { get; set; }
         public virtual User UserWorker { get; set; }
-        public virtual List<User> UserPreWorker { get; set; }
+        public virtual List<JobPreWorker> UserPreWorker { get; set; }
+
+      
+
         //0:sin PreWork ,1:Con Prework, 2: Con UserWorker, 3: Finalizado
-        public  short Status { get; set; }
+        public short Status { get; set; }
 
         public string Description { get; set; }
         public string Tittle { get; set; }

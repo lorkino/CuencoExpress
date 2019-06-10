@@ -4,14 +4,16 @@ using Film.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Film.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicatonDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190606095638_asdasda")]
+    partial class asdasda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,19 +76,6 @@ namespace Film.Migrations
                     b.ToTable("JobKnowledges");
                 });
 
-            modelBuilder.Entity("Film.Models.JobPreWorker", b =>
-                {
-                    b.Property<string>("JobId");
-
-                    b.Property<string>("UserPreWorkeId");
-
-                    b.HasKey("JobId", "UserPreWorkeId");
-
-                    b.HasIndex("UserPreWorkeId");
-
-                    b.ToTable("JobPreWorker");
-                });
-
             modelBuilder.Entity("Film.Models.Knowledges", b =>
                 {
                     b.Property<string>("Id")
@@ -118,6 +107,8 @@ namespace Film.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("JobId");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -144,6 +135,8 @@ namespace Film.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("JobId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -322,11 +315,11 @@ namespace Film.Migrations
             modelBuilder.Entity("Film.Models.Job", b =>
                 {
                     b.HasOne("Film.Models.User", "UserCreator")
-                        .WithMany("JobsCreator")
+                        .WithMany()
                         .HasForeignKey("UserCreatorId");
 
                     b.HasOne("Film.Models.User", "UserWorker")
-                        .WithMany("JobsWorker")
+                        .WithMany()
                         .HasForeignKey("UserWorkerId");
                 });
 
@@ -343,17 +336,11 @@ namespace Film.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Film.Models.JobPreWorker", b =>
+            modelBuilder.Entity("Film.Models.User", b =>
                 {
-                    b.HasOne("Film.Models.User", "UserPreWorker")
-                        .WithMany("JobsPreworker")
-                        .HasForeignKey("JobId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Film.Models.Job", "Job")
+                    b.HasOne("Film.Models.Job")
                         .WithMany("UserPreWorker")
-                        .HasForeignKey("UserPreWorkeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("JobId");
                 });
 
             modelBuilder.Entity("Film.Models.UserDates", b =>
