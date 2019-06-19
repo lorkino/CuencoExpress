@@ -17,6 +17,6 @@
 </ul>-->
 
 <div class="top-avatar btn navMenuTop"  routerLink="/profile">
-  <img  style="width:30px;" class=" img-rounded mr-2 my-file-small"   [src]="this.accountService.user?.userDates.profileImg"      >
-  <span class="username text-white" [innerHTML]="this.accountService.user?.userDates.name"></span>
+  <img  style="width:30px;" class=" img-rounded mr-2 my-file-small"   [src]="this.accountService.user?.userDates?.profileImg"      >
+  <span class="username text-white" [innerHTML]="this.accountService.user?.userDates?.name"></span>
 </div>

@@ -11,8 +11,8 @@ namespace Film.Models
 {
     public class User : IdentityUser
     {
-       
-       
+
+
         public virtual UserDates UserDates { get; set; }
         public bool Admin { get; set; }
         public bool Status { get; set; }
@@ -26,11 +26,15 @@ namespace Film.Models
         [NotMapped]
         public DateTime TokenExpiration { get; set; }
         [DataType(DataType.EmailAddress, ErrorMessage = "E-mail is not valid")]
-        public override string Email { get => base.Email; set => base.Email = value; }      
+        public override string Email { get => base.Email; set => base.Email = value; }
+
         public List<UserKnowledges> UserKnowledges { get; set; }
-       
+        [InverseProperty("UserWorker")]
         public virtual List<Job> JobsWorker { get; set; }
-        public virtual List<JobPreWorker> JobsPreworker { get; set; }
+        public virtual List<JobPreWorker> JobPreWorker { get; set; }
+        [InverseProperty("UserCreator")]
         public virtual List<Job> JobsCreator { get; set; }
+
+        public virtual List<Notifications> Notifications { get; set; }
     }
 }

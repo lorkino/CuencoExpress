@@ -98,8 +98,8 @@ export class ExpressService {
     return this.http.get<any>("api/job/offersnumber");
   }
 
-  getOffers(): Observable<any> {
-    return this.http.get<any>("api/job/offers");
+  getOffers( i:number=1): Observable<any> {
+    return this.http.get<any>("api/job/offers/"+i);
   }
   obtenerToken(): string {
     return localStorage.getItem("token");

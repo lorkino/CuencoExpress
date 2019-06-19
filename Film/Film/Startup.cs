@@ -19,6 +19,8 @@ using Newtonsoft.Json;
 using Nest;
 using Film.SignalR;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Logging.Console;
 
 namespace Film
 {
@@ -35,15 +37,6 @@ namespace Film
 
         }
 
-        private ILoggerFactory GetLoggerFactory()
-        {
-            IServiceCollection serviceCollection = new ServiceCollection();
-            serviceCollection.AddLogging(builder => builder
-                .AddDebug()
-                .AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Debug));
-            return serviceCollection.BuildServiceProvider()
-                    .GetService<ILoggerFactory>();
-        }
         public IConfiguration Configuration { get; }
 
         
@@ -130,9 +123,19 @@ namespace Film
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddDbContextPool<ApplicationDbContext>(
              optionsAction => optionsAction.UseSqlServer(Configuration.GetConnectionString("MyDatabase")));
-            services.AddDbContextPool<ApplicationDbContext>(
-              optionsAction => optionsAction.UseLoggerFactory(GetLoggerFactory()));
 
+            //var scopeFactory = services.BuildServiceProvider()
+            //               .GetRequiredService<IServiceScopeFactory>();
+            //using (var scope = scopeFactory.CreateScope())
+            //{
+            //    using (var context = scope.ServiceProvider
+            //                              .GetRequiredService<ApplicationDbContext>())
+            //    {
+            //        var loggerFactory = context.GetInfrastructure()
+            //                                   .GetService<ILoggerFactory>();
+            //        loggerFactory.AddProvider(new ConsoleLoggerProvider((_, __) => true, true));
+            //    }
+            //}
 
         }
 

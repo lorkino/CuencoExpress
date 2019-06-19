@@ -44,6 +44,10 @@ export class OffersComponent implements OnInit {
 
   pageChanged(event) {
     this.config.currentPage = event;
+    this.expressService.getOffers(event).subscribe(result => {
+      this.offers = result;
+    });
+    console.log(event);
   }
 
 }

@@ -37,7 +37,7 @@ namespace Film.Controllers
                 User user = await _context.Users.Where(a => a.Email == userName).Include(a => a.UserKnowledges).FirstOrDefaultAsync();
 
                
-                     Job job = await _context.Job.Where(a => a.UserCreator.UserName == user.UserName).OrderByDescending(a => a.CreatedDate).Include(a => a.JobKnowledges).Include(a=>a.UserPreWorker).FirstOrDefaultAsync();
+                     Job job = await _context.Job.Where(a => a.UserCreator.UserName == user.UserName).OrderByDescending(a => a.CreatedDate).Include(a => a.JobKnowledges).FirstOrDefaultAsync();
                 //conocimientos existentes
                 var eKnowledges = _context.Knowledges.ToList();
                 var newItems = knowledges.Where(x => !eKnowledges.Any(y => x.Value == y.Value)).ToList();
@@ -63,7 +63,7 @@ namespace Film.Controllers
                 });
                
                 job.JobKnowledges = ListjobKnowledges;
-                _context.Entry<Job>(job).State = EntityState.Detached;
+                //_context.Entry<Job>(job).State = EntityState.Detached;
                 await _context.SaveChangesAsync();
                 //conectamos con los usuarios para preasignarles un aviso de trabajo
                 await AsignJob(knowledges.Where(a => a.Value != null).ToList(),job);
@@ -76,7 +76,7 @@ namespace Film.Controllers
                 return BadRequest(e.ToString());
 
             }
-            return Ok("Ok");
+            return Ok(Json("Se ha publicado el trabajo correctamente"));
 
         }
         public class MyLogger
@@ -91,34 +91,29 @@ namespace Film.Controllers
             try
             {
                 var userName = User.Identity.Name;
-                User usercreator = await _context.Users.Where(a => a.Email == userName).Include(a => a.JobsPreworker).FirstOrDefaultAsync();
+                User usercreator = await _context.Users.Where(a => a.Email == userName).FirstOrDefaultAsync();
 
                 List<User> usersPreWorkers = MyGlobals.SearchByTags(knowledges.ToList());
                 usersPreWorkers.RemoveAll(a => a.Email == userName);
+
+                
                 List<JobPreWorker> jobPreWorkers = new List<JobPreWorker>();
                 usersPreWorkers.ForEach(delegate (User element)
                 {
-                    JobPreWorker jobPreWorker = new JobPreWorker
-                    {
-                        Job = job,
-                        UserPreWorker = element
-                    };
+                    User user = _context.Users.Where(a => a.Email == element.Email).FirstOrDefault();
                    
+                    JobPreWorker jobPreWorker = new JobPreWorker();
+                    jobPreWorker.Job = job;
+                    jobPreWorker.UserPreWorker = user;
                     jobPreWorkers.Add(jobPreWorker);
-                });
-                usersPreWorkers.ForEach(delegate (User element)
-                {
-                    
-                    element.JobsPreworker = jobPreWorkers;
-                    
-                });
-                var logger = new MyLogger();
-
-                var log = _context.FirstOrDefault(o => o.Id > 0);
-                Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
-                usercreator.JobsPreworker = jobPreWorkers;
+                }); 
+               
+                //List<JobPreWorker> jobPreWorkers = new List<JobPreWorker>();
                 job.UserPreWorker = jobPreWorkers;
-                var results= await _context.SaveChangesAsync();
+                
+
+
+                var results = await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception e) {
@@ -146,30 +141,36 @@ namespace Film.Controllers
 
 
         }
-        [HttpGet]
-        public async Task<JsonResult> Offers()
+        [HttpGet("{i}")]
+        public async Task<JsonResult> Offers(int i)
         {
             var userName = User.Identity.Name;
 
 
 
-            List<JobPreWorker> user = await _context.JobPreWorker.Where(a => a.UserPreWorker.Email == userName).Include(a=>a.UserPreWorker).Include(a => a.Job).ToListAsync();
-            List<Job> jobs = user.Select(a=>a.Job).ToList();
+            List<JobPreWorker> user = await _context.JobPreWorkers.Where(a => a.UserPreWorker.Email == userName).Include(a => a.Job).Skip((i - 1) * 5).Take(5).ToListAsync();
+   //List<Job> offers = await _context.Job.Where(a => a.UserPreWorker.Any(b => b.UserName.Contains(userName))).ToListAsync();
+            List<ViewJob> offers = user.Select(a=> (ViewJob)a.Job).ToList();
+
             // List<Job> jobs = await _context.Job.Include(b=>b.UserPreWorker).Where(c=>c.UserPreWorker.First().).OrderByDescending(a => a.CreatedDate).Include(a => a.JobKnowledges).ThenInclude(post => post.Knowledges).Include(a => a.UserWorker).ToListAsync();
-           // List <Job> jobs = await _context.Job.Include(b => b.UserPreWorker).ThenInclude(b=>b.UserPreWorker).OrderByDescending(a => a.CreatedDate).ToListAsync();
-            List<ViewJob> job = jobs.Select(a => (ViewJob)a).ToList();
-            return Json(job);
+            // List <Job> jobs = await _context.Job.Include(b => b.UserPreWorker).ThenInclude(b=>b.UserPreWorker).OrderByDescending(a => a.CreatedDate).ToListAsync();
+
+            //List<ViewJob> job = jobs.Select(a => (ViewJob)a).ToList();
+            return Json(offers);
         }
         //cantidad de jobs
         [HttpGet]
         public async Task<JsonResult> OffersNumber()
         {
             var userName = User.Identity.Name;
-            User user = await _context.Users.Where(a => a.Email == userName).FirstOrDefaultAsync();
+
+            List<JobPreWorker> user = await _context.JobPreWorkers.Where(a => a.UserPreWorker.Email == userName).Include(a => a.Job).ToListAsync();
+            //List<Job> offers = await _context.Job.Where(a => a.UserPreWorker.Any(b => b.UserName.Contains(userName))).ToListAsync();
+            int offers = user.Select(a => (ViewJob)a.Job).ToList().Count();
             //int jobs = await _context.Job.Where(a => a.UserPreWorker.Contains(user)).CountAsync();
-            return Json(1);
+            return Json(offers);
         }
-        [HttpGet]
+        
         public async Task<JsonResult> Jobs()
         {
             var userName = User.Identity.Name;

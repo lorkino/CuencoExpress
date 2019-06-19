@@ -32,7 +32,7 @@ export class MyInterceptor implements HttpInterceptor {
     //Mensajes de toast
     enum Messages {
       Profile = "Su perfil se ha actualizado correctamente",
-      Job = "DOWN",
+      Job = "Se ha publicado el trabajo correctamente",     
       Left = "LEFT",
       Right = "RIGHT",
     }
@@ -58,6 +58,11 @@ export class MyInterceptor implements HttpInterceptor {
           if ((<any>Object).values(Messages).includes(event.body)) {
             that.expressService.updateLocalUser();
             toastr.success(event.body);
+          }
+          else {
+            if (event.body!=null)
+            if(event.body.value!=null)
+            toastr.success(event.body.value);
           }
 
           // this.errorDialogService.openDialog(event);

@@ -15,8 +15,8 @@ namespace Film.Models
         public DbSet<Knowledges> Knowledges { get; set; }
         public DbSet<Job> Job { get; set; }
         public DbSet<Images> Images { get; set; }
-
-        public DbSet<JobPreWorker> JobPreWorker { get; set; }
+        public DbSet<JobPreWorker> JobPreWorkers { get; set; }
+        // public DbSet<JobPreWorker> JobPreWorker { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
            : base(options)
         {
@@ -66,17 +66,31 @@ namespace Film.Models
 
             //many to many preworker y jobs
 
-            modelBuilder.Entity<JobPreWorker>()
-                .HasKey(bc => new { bc.JobId, bc.UserPreWorkeId });
-            modelBuilder.Entity<JobPreWorker>()
-                .HasOne(bc => bc.UserPreWorker)
-                .WithMany(b => b.JobsPreworker)
-                .HasForeignKey(bc => bc.JobId);
-            modelBuilder.Entity<JobPreWorker>()
-                .HasOne(bc => bc.Job)
-                .WithMany(c => c.UserPreWorker)
-                .HasForeignKey(bc => bc.UserPreWorkeId);
+            //modelBuilder.Entity<JobPreWorker>()
+            //    .HasKey(bc => new { bc.JobId, bc.UserPreWorkeId });
+            //modelBuilder.Entity<JobPreWorker>()
+            //    .HasOne(bc => bc.UserPreWorker)
+            //    .WithMany(b => b.JobsPreworker)
+            //    .HasForeignKey(bc => bc.JobId);
+            //modelBuilder.Entity<JobPreWorker>()
+            //    .HasOne(bc => bc.Job)
+            //    .WithMany(c => c.UserPreWorker)
+            //    .HasForeignKey(bc => bc.UserPreWorkeId);
 
+
+            //many to many job con preworker
+            modelBuilder.Entity<JobPreWorker>()
+          .HasKey(t => new { t.JobId, t.UserPreWorkeId });
+
+            modelBuilder.Entity<JobPreWorker>()
+                .HasOne(pt => pt.Job)
+                .WithMany(p => p.UserPreWorker)
+                .HasForeignKey(pt => pt.JobId);
+
+            modelBuilder.Entity<JobPreWorker>()
+                .HasOne(pt => pt.UserPreWorker)
+                .WithMany(t => t.JobPreWorker)
+                .HasForeignKey(pt => pt.UserPreWorkeId);
 
             modelBuilder.Entity<User>().HasKey(k => k.Id);
             modelBuilder.Entity<User>().HasMany(a => a.JobsCreator)
