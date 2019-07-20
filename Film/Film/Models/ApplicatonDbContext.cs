@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using EntityFrameworkCore.Triggers;
+using Film.SignalR;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Film.Models
@@ -16,6 +19,7 @@ namespace Film.Models
         public DbSet<Job> Job { get; set; }
         public DbSet<Images> Images { get; set; }
         public DbSet<JobPreWorker> JobPreWorkers { get; set; }
+        public DbSet<Suscription> Suscriptions { get; set; }
         // public DbSet<JobPreWorker> JobPreWorker { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
            : base(options)
@@ -23,7 +27,26 @@ namespace Film.Models
 
         }
 
-
+        public override Int32 SaveChanges()
+        {
+          
+            return this.SaveChangesWithTriggers(base.SaveChanges, acceptAllChangesOnSuccess: true);
+        }
+        public override Int32 SaveChanges(Boolean acceptAllChangesOnSuccess)
+        {
+           
+            return this.SaveChangesWithTriggers(base.SaveChanges, acceptAllChangesOnSuccess);
+        }
+        public override Task<Int32> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            
+            return this.SaveChangesWithTriggersAsync(base.SaveChangesAsync, acceptAllChangesOnSuccess: true, cancellationToken: cancellationToken);
+        }
+        public override Task<Int32> SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            
+            return this.SaveChangesWithTriggersAsync(base.SaveChangesAsync, acceptAllChangesOnSuccess, cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

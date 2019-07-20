@@ -34,7 +34,7 @@ namespace Film.Models
         public virtual List<JobPreWorker> JobPreWorker { get; set; }
         [InverseProperty("UserCreator")]
         public virtual List<Job> JobsCreator { get; set; }
-
+        public virtual Suscription Suscription { get; set; }
         public virtual List<Notifications> Notifications { get; set; }
     }
 }

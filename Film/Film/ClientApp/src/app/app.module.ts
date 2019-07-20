@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { RouterModule, PreloadAllModules } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './Components/./nav-menu/nav-menu.component';
 import { HomeComponent } from './Components/./home/home.component';
@@ -29,7 +29,8 @@ import { CardJobComponent } from './Components/card-job/card-job.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { CardOffersComponent } from './Components/card-offers/card-offers.component';
 import { OffersComponent } from './Components/offers/offers.component';
-
+import { NotificationService } from './services/generated';
+import { SignalRService } from './signal-r.service';
 
 
 
@@ -71,9 +72,10 @@ import { OffersComponent } from './Components/offers/offers.component';
       { path: 'profile', component: ProfileComponent, canActivate: [AuthGuardService] },
       { path: 'offer', component: OffersComponent, canActivate: [AuthGuardService] },
       { path: 'job', component: JobComponent, canActivate: [AuthGuardService] }
-    ])
+    ], { preloadingStrategy: PreloadAllModules })
+
   ],
-  providers: [AuthGuardService, ExpressService, {
+  providers: [AuthGuardService, ExpressService, NotificationService, SignalRService, {
     provide: HTTP_INTERCEPTORS,
     useFactory: getAuthServiceConfigs,
     useClass: MyInterceptor,

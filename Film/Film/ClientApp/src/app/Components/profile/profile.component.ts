@@ -6,6 +6,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormGroup, FormControl } from '@angular/forms';
 import { error } from 'util';
 import { ok } from 'assert';
+import { PushsuscriberService } from '../../services/pushsuscriber.service';
+import { NotificationService } from '../../services/generated';
+import { SignalRService } from '../../signal-r.service';
 
 //import { Ng2TelInputModule } from 'ng2-tel-input';
 declare var jquery: any;
@@ -17,7 +20,8 @@ declare var $: any;
 })
 export class ProfileComponent implements OnInit {
 
-  constructor(private accountService: ExpressService, private http: HttpClient, private generalService: GeneralService) { }
+  constructor(private accountService: ExpressService, private http: HttpClient, private generalService: GeneralService,
+    private notificationService: PushsuscriberService, private notificationServices: NotificationService, private nh: SignalRService) { }
   imageUrl: any;
   cCode: string;
 
@@ -37,9 +41,9 @@ export class ProfileComponent implements OnInit {
     personalInfo: new FormControl(''),
     profileImg: new FormControl([])
   });
-  
 
-  
+
+
   ngOnInit() {
     
     //this.profileForm.setValue(this.accountService.user.userDates);
@@ -73,19 +77,19 @@ export class ProfileComponent implements OnInit {
     //});
 
 
-   
-   //this.cCode = countryCode.toLowerCase();
+
+    //this.cCode = countryCode.toLowerCase();
 
     const req = this.http.get<any>('https://api.ipdata.co/?api-key=test');
     // 0 requests made - .subscribe() not called.
-    req.subscribe((response)=>{
+    req.subscribe((response) => {
       (<any>document).getElementById("city").value = response.city;
       (<any>document).getElementById("state").value = response.region;
       (<any>document).getElementById("zip").value = response.postal;
       this.cCode = response.country_code.toLowerCase();
-        console.log(this.cCode);    
+      console.log(this.cCode);
     });
-    
+
   }
 
 
@@ -95,21 +99,39 @@ export class ProfileComponent implements OnInit {
 
 
   imageUpload(event: any) {
-  const reader = new FileReader();
-        if(event.target.files && event.target.files.length) {
-        const [file] = event.target.files;
-        reader.readAsDataURL(file);
-          reader.onloadend = () => {
-          (<any>document).getElementById("prueba").src = reader.result;
-          this.profileForm.patchValue({
-            profileImg: (<any>reader.result).split(",")[1]
-          });
+    const reader = new FileReader();
+    if (event.target.files && event.target.files.length) {
+      const [file] = event.target.files;
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        (<any>document).getElementById("prueba").src = reader.result;
+        this.profileForm.patchValue({
+          profileImg: (<any>reader.result).split(",")[1]
+        });
 
-        };
-      }
+      };
+    }
   }
- 
 
+  subscribe() {
+    this.notificationService.subscribeUser();
+
+  }
+  unsubscribe() {
+    this.notificationService.unsubscribe();
+
+  }
+
+  test() {
+    var model
+      = {
+      title: "asdasd",
+      message: "asdasd"
+    };
+    this.notificationServices.broadcast(model).subscribe(() => {
+
+    })
+  }
   submit() {
     this.profileForm.get('knowledges').setValue((<any>document.getElementById("knowledges")).value);
     this.profileForm.get('explanation').setValue((<any>document.getElementById("explanation")).value);
@@ -119,18 +141,17 @@ export class ProfileComponent implements OnInit {
       var explanations = this.profileForm.value.explanation.split(" - ");
       var knowledgeObject = [knowledges.length];
 
-      for (var i = 0; i < knowledges.length; i++)
-      {
+      for (var i = 0; i < knowledges.length; i++) {
         knowledgeObject[i] = new Object();
         (<any>knowledgeObject)[i].Value = knowledges[i];
         (<any>knowledgeObject)[i].Explanation = explanations[i];
       }
-   
+
 
       this.accountService.setKnowledges(knowledgeObject).subscribe(response => {
         console.log(response);
       });
     });
-    
+
   }
 }

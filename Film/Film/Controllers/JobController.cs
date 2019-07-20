@@ -5,12 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Film.Models;
+using Film.SignalR;
 using Film.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Nest;
+using WebPush;
 using Job = Film.Models.Job;
 
 namespace Film.Controllers
@@ -21,14 +24,17 @@ namespace Film.Controllers
     public class JobController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public JobController(ApplicationDbContext context)
+        private readonly IHubContext<NotificationsHub> _hubContext;
+        public JobController(ApplicationDbContext context, IHubContext<NotificationsHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
-        //añadimos nuevos conocieminetos a la base de datos
-        //Añadimos al trabajo sus conocimientos
-        [HttpPost]
+        
+
+            //añadimos nuevos conocieminetos a la base de datos
+            //Añadimos al trabajo sus conocimientos
+            [HttpPost]
         public async Task<IActionResult> SaveKnowledges([FromBody] List<Knowledges> knowledges)
         {
             try
@@ -67,7 +73,7 @@ namespace Film.Controllers
                 await _context.SaveChangesAsync();
                 //conectamos con los usuarios para preasignarles un aviso de trabajo
                 await AsignJob(knowledges.Where(a => a.Value != null).ToList(),job);
-
+               
 
             }
             catch (Exception e)
@@ -87,7 +93,7 @@ namespace Film.Controllers
             }
         }
 
-        public  async Task<bool> AsignJob(List<Knowledges> knowledges, Job job) {
+        protected  async Task<bool> AsignJob(List<Knowledges> knowledges, Job job) {
             try
             {
                 var userName = User.Identity.Name;
@@ -95,16 +101,20 @@ namespace Film.Controllers
 
                 List<User> usersPreWorkers = MyGlobals.SearchByTags(knowledges.ToList());
                 usersPreWorkers.RemoveAll(a => a.Email == userName);
+                List<User> usersNotifications = _context.Users.Where(a=> usersPreWorkers.Any(b=>a.Email==b.Email)).Include(a=>a.UserDates).Include(a=>a.Suscription).ToList();
+                
 
                 
                 List<JobPreWorker> jobPreWorkers = new List<JobPreWorker>();
                 usersPreWorkers.ForEach(delegate (User element)
                 {
                     User user = _context.Users.Where(a => a.Email == element.Email).FirstOrDefault();
-                   
-                    JobPreWorker jobPreWorker = new JobPreWorker();
-                    jobPreWorker.Job = job;
-                    jobPreWorker.UserPreWorker = user;
+
+                    JobPreWorker jobPreWorker = new JobPreWorker
+                    {
+                        Job = job,
+                        UserPreWorker = user
+                    };
                     jobPreWorkers.Add(jobPreWorker);
                 }); 
                
@@ -114,6 +124,16 @@ namespace Film.Controllers
 
 
                 var results = await _context.SaveChangesAsync();
+                NotificationModel message = new NotificationModel()
+                {
+                    Message = "Una nueva oferta de trabajo",
+                    Title = "Oferta!",
+                    Url = this.Request.Host.ToString()
+                };
+
+                  NotificationsController.Broadcast(message, usersNotifications);
+                NotificationsController NC = new NotificationsController(_context,_hubContext);
+                await NC.AddNotifications(usersNotifications, 0,_context);
                 return true;
             }
             catch (Exception e) {
@@ -170,7 +190,7 @@ namespace Film.Controllers
             //int jobs = await _context.Job.Where(a => a.UserPreWorker.Contains(user)).CountAsync();
             return Json(offers);
         }
-        
+        [HttpGet]
         public async Task<JsonResult> Jobs()
         {
             var userName = User.Identity.Name;

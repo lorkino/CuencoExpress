@@ -23,7 +23,7 @@ namespace Film.ViewModels
         [JsonConverter(typeof(Base64FileJsonConverter))]
         public byte[] ProfileImg { get; set; }
         public string PersonalInfo { get; set; }
-
+        public bool Suscribed { get; set; }
 
         public static explicit operator ViewUserDates(UserDates v)
         {
@@ -42,8 +42,9 @@ namespace Film.ViewModels
                 Phone = v.Phone,
                 Score = v.Score,
                 ProfileImg = v.ProfileImg,
-                PersonalInfo = v.PersonalInfo              
-                             
+                PersonalInfo = v.PersonalInfo,
+                Suscribed = v.Suscribed
+
             };
             return userDates;
         }

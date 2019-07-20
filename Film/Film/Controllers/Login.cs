@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Film.Controllers;
 using Film.Models;
+using Film.SignalR;
 using Film.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -95,7 +96,9 @@ namespace Film.Areas.Identity.Pages.Account
                     userComplete.Token = token.Item1;
                     userComplete.TokenExpiration = token.Item2;
                     ViewUser userSecure = userComplete;
-                  
+                    NotificationsHub NH = new NotificationsHub();
+                    NH.SetUser(userComplete.Email);
+                    
                     return Ok(userSecure);
                 }
 

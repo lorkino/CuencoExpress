@@ -22,7 +22,7 @@ export class SignalRService {
   
   private createConnection() {  
     this._hubConnection = new HubConnectionBuilder()  
-      .withUrl(window.location.href+'chathub')  
+      .withUrl(window.location.origin+'/chathub')  
       .build();  
   }  
   
@@ -41,7 +41,8 @@ export class SignalRService {
   }  
   
   private registerOnServerEvents(): void {  
-    this._hubConnection.on('ReceiveMessage', (data: any) => {  
+    this._hubConnection.on('ReceiveMessage', (data: any) => {
+      console.log(data);
       this.messageReceived.emit(data);  
     });  
   }  

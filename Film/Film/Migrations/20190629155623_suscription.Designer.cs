@@ -4,14 +4,16 @@ using Film.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Film.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190629155623_suscription")]
+    partial class suscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,9 +108,13 @@ namespace Film.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Auth");
+
                     b.Property<DateTime>("CreatedDate");
 
-                    b.Property<bool>("Readed");
+                    b.Property<string>("Endpoint");
+
+                    b.Property<string>("P256DH");
 
                     b.Property<short>("Type");
 
@@ -134,7 +140,7 @@ namespace Film.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suscriptions");
+                    b.ToTable("Suscription");
                 });
 
             modelBuilder.Entity("Film.Models.User", b =>

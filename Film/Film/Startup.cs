@@ -21,11 +21,27 @@ using Film.SignalR;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging.Console;
+using WebPush;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
+using System.Linq;
+using Swashbuckle.AspNetCore.Swagger;
+using System.Reflection;
+using System.IO;
+using Film.Controllers;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Film
 {
+    public class PushNotificationsOptions
+    {
+        public string PublicKey { get; set; }
+        public string PrivateKey { get; set; }
+    }
+
     public class Startup
     {
+       
         public ILogger<Startup> Logger { get; set; }
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
@@ -120,6 +136,7 @@ namespace Film
                 }
                 );
             services.AddSignalR();
+            services.AddSingleton<NotificationsHub>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddDbContextPool<ApplicationDbContext>(
              optionsAction => optionsAction.UseSqlServer(Configuration.GetConnectionString("MyDatabase")));
@@ -136,7 +153,51 @@ namespace Film
             //        loggerFactory.AddProvider(new ConsoleLoggerProvider((_, __) => true, true));
             //    }
             //}
+            var vapidDetails = new VapidDetails(
+              Configuration.GetValue<string>("VapidDetails:Subject"),
+              Configuration.GetValue<string>("VapidDetails:PublicKey"),
+              Configuration.GetValue<string>("VapidDetails:PrivateKey"));
+            services.AddTransient(c => vapidDetails);
+            
+            services.Configure<PushNotificationsOptions>(Configuration.GetSection("PushNotifications"));
 
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+                                         {
+                               "image/svg+xml",
+                               "application/atom+xml"
+                            }); ;
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                
+                options.Level = CompressionLevel.Fastest;
+            });
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "PrintFramer API",
+                    Description = "Calculates the cost of a picture frame based on its dimensions.",
+                    TermsOfService = "None",
+                    Contact = new Contact
+                    {
+                        Name = "Your name",
+                        Email = string.Empty,
+                        Url = "https://www.microsoft.com/learn"
+                    }
+                });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -145,10 +206,7 @@ namespace Film
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSignalR(route =>
-                {
-                    route.MapHub<NotificationsHub>("/chathub");
-                });
+               
             }
             else
             {
@@ -161,10 +219,15 @@ namespace Film
                 var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 // Seed the database.
             }
+            app.UseResponseCompression();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseAuthentication();
+            app.UseSignalR(route =>
+            {
+                route.MapHub<NotificationsHub>("/chathub");
+            });
             app.UseHsts();
             app.UseMvc(routes =>
             {
@@ -172,7 +235,16 @@ namespace Film
                     name: "default",
                     template: "{controller}/{action=Index}/{id?}");
             });
-           
+            
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseSpa(spa =>
             {
@@ -186,6 +258,9 @@ namespace Film
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
+            NotificationsController._vapidDetails = app.ApplicationServices.GetService<VapidDetails>();
+
         }
     }
 }

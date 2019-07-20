@@ -13,6 +13,6 @@ export class UserDates {
   score: string;
   profileImg: string;
   personalInfo: string;
-  
+  suscribed: boolean;
 
 };

@@ -38,11 +38,15 @@ export class MyInterceptor implements HttpInterceptor {
     }
     
     var token = this.expressService.obtenerToken();
-     
+    var headers: string[] = ["Authorization: bearer " + token, "accept-encoding:gzip"];
+   
     //Comprobar si hacemos peticion a nuestra API o a otra del exterior
-    if (excludeRoutes.indexOf(req.url) == -1 && req.url.search(excludeRoutes[1]) ==-1)
+    if (excludeRoutes.indexOf(req.url) == -1 && req.url.search(excludeRoutes[1]) == -1)
       req = req.clone({
-        setHeaders: { Authorization: "bearer " + token }
+        setHeaders: {
+          headers
+        }
+       
       });
     else {
       this.loadingScreenService.stopLoading();
