@@ -25,6 +25,7 @@ namespace Film.ViewModels
         public DateTime CreatedDate { get; set; }
         public static explicit operator ViewJob(Job v)
         {
+           
             if (v == null)
                 return null;
             ViewJob job = new ViewJob

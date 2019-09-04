@@ -106,12 +106,18 @@ namespace Film.Areas.Identity.Pages.Account
                 var route = Url.RouteUrl("ConfirmEmail", new { userId = user.Id, code = code });
                 host = "https://"+host + route;
 
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(User.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{host}'>clicking here</a>.");
 
-                    await _emailSender.SendEmailAsync(User.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{host}'>clicking here</a>.");
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return Redirect("Confirm_Email");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return Ok("Revisa tu correo para confirmar el email");
+                    }
+                    catch (Exception e) {
+                        await _userManager.DeleteAsync(user);
+                        return BadRequest("Ha habido en error en su registro intentelo de nuevo");
+                    }
                 }         
             
             return BadRequest(result.Errors);

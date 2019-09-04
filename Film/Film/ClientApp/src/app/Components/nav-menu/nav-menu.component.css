@@ -9,3 +9,11 @@
     /* On small screens, convert the nav menu to a vertical sidebar */
   
 }
+
+.badge-notify {
+  background: red;
+  position: relative;
+  top:-83px;
+  left:-6px;
+
+}

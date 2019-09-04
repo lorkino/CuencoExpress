@@ -208,6 +208,10 @@ namespace Film.Migrations
 
                     b.Property<string>("Country");
 
+                    b.Property<double>("Lat");
+
+                    b.Property<double>("Lon");
+
                     b.Property<string>("Name");
 
                     b.Property<string>("PersonalInfo");

@@ -21,7 +21,7 @@ declare var $: any;
 export class ProfileComponent implements OnInit {
 
   constructor(private accountService: ExpressService, private http: HttpClient, private generalService: GeneralService,
-    private notificationService: PushsuscriberService, private notificationServices: NotificationService, private nh: SignalRService) { }
+    private notificationService: PushsuscriberService, private notificationServices: NotificationService) { }
   imageUrl: any;
   cCode: string;
 

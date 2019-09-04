@@ -22,26 +22,29 @@ namespace Film.ViewModels
         public int AccessFailedCount { get; set; }
         public List<ViewKnowledge> Knowledges { get; set; }
 
+        public List<ViewNotification> Notifications { get; set; }
+
         public static implicit operator ViewUser(User v)
         {
             if (v == null)
                 return null;
-            ViewUser userDates = new ViewUser
-                {
-                    Admin = v.Admin,
-                    Status = v.Status,
-                    RememberMe = v.RememberMe,
-                    Password = v.Password,
-                    Token = v.Token,
-                    TokenExpiration = v.TokenExpiration,
-                    Email = v.Email,
-                    EmailConfirmed = v.EmailConfirmed,
-                    AccessFailedCount = v.AccessFailedCount,
-                    UserDates = (ViewUserDates)v?.UserDates,
-                    Knowledges = v.UserKnowledges?.Select(a => (ViewKnowledge)a.Knowledges)?.ToList()
-
-            };
-             return userDates;
+            ViewUser user = new ViewUser
+            {
+                Admin = v.Admin,
+                Status = v.Status,
+                RememberMe = v.RememberMe,
+                Password = v.Password,
+                Token = v.Token,
+                TokenExpiration = v.TokenExpiration,
+                Email = v.Email,
+                EmailConfirmed = v.EmailConfirmed,
+                AccessFailedCount = v.AccessFailedCount,
+                UserDates = (ViewUserDates)v?.UserDates,
+                Knowledges = v.UserKnowledges?.Select(a => (ViewKnowledge)a.Knowledges)?.ToList(),
+                Notifications = (from t in v.Notifications
+                                 select new ViewNotification { CreatedDate = t.CreatedDate, Readed = t.Readed,Type=t.Type}).ToList()
+        };
+             return user;
                  
 
         }

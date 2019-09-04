@@ -1,45 +1,55 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, Injector } from '@angular/core';
+import { Observable, of, Observer } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from "./Models/user";
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserDates } from './Models/userDates';
+import { CommonService } from './services/common/common.service';
+import { SignalRService } from './signal-r.service';
 @Injectable({
   providedIn: 'root',
 })
 export class ExpressService {
   public user: User;
-  constructor(private http: HttpClient, private router: Router) {
-
+  
+  constructor(private http: HttpClient, private router: Router,
+    private commonService: CommonService) {
   }
 
-  login(email: string, password: string, rememberme: boolean) {
-    this.http.post<User>('api/login',
-      {
-        Email: email,
-        Password: password,
-        RememberMe: rememberme
-      }).subscribe(
-      response => {
-        //this.user = {
-        //  accessFailedCount : response.accessFailedCount,
-        //  admin: response.admin,
-        //  email: response.email,
-        //  emailConfirmed: response.emailConfirmed,
-        //  rememberMe: response.rememberMe,
-        //  token: response.token,
-        //  tokenExpiration: response.tokenExpiration
-        
-        //};
+  login(email: string, password: string, rememberme: boolean): Observable<any> {
+    return Observable.create((observer: Observer<any>) => {
+      this.http.post<User>('api/login',
+        {
+          Email: email,
+          Password: password,
+          RememberMe: rememberme
+        }).subscribe(
+          response => {
+            //this.user = {
+            //  accessFailedCount : response.accessFailedCount,
+            //  admin: response.admin,
+            //  email: response.email,
+            //  emailConfirmed: response.emailConfirmed,
+            //  rememberMe: response.rememberMe,
+            //  token: response.token,
+            //  tokenExpiration: response.tokenExpiration
 
-        this.setUser(response);
-        this.setUserStorage();
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('tokenExpiration', response.tokenExpiration);
-        this.router.navigate(['/']);
-      });
+            //};
+
+            this.setUser(response);
+            this.setUserStorage();
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('tokenExpiration', response.tokenExpiration);
+            let date = new Date();
+            localStorage.setItem('tokenDate', date.toISOString());
+            this.commonService.setSubject("activandoBugdetDeNavMenu");         
+            observer.next(response)
+            observer.complete()
+            this.router.navigate(['/']);
+          });
+    })
 
   }
 
@@ -112,8 +122,19 @@ export class ExpressService {
   logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("tokenExpiration");
+    this.delete_cookie(".AspNetCore.Identity.Application");
+  }
+  //borra todo el almacenamiento del server si las versiones localstorage de cliente son mas antiguas
+  checkClientStorageVersion(dateServer) {
+    if (dateServer > localStorage.getItem("tokenDate")) {
+      localStorage.clear();
+
+    }
   }
 
+  delete_cookie(name) {
+  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  }
   estaLogueado(): boolean {
 
     var exp = this.obtenerExpiracionToken();

@@ -11,7 +11,7 @@ using System.Security.Principal;
 
 namespace Film.SignalR
 {
-    //[Authorize]
+    [Authorize]
      public class NotificationsHub
     : Hub
     {
@@ -22,8 +22,7 @@ namespace Film.SignalR
             string a = Context.User.Identity.Name;
             UsersConnected.Add(a, Context.ConnectionId);
             await base.OnConnectedAsync();
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "juasjas");
-
+            
         }
         public override async Task OnDisconnectedAsync(Exception e)
         {
@@ -47,12 +46,7 @@ namespace Film.SignalR
 
         }
 
-        public void  SetUser(string name)
-        {
-            //string a = Context.User.Identity.Name;
-             //Clients.Client(a).SendAsync("ReceiveMessage", name);
-            //UsersConnected.Add(name,Context.UserIdentifier);
-        }
+     
     }
 
 }

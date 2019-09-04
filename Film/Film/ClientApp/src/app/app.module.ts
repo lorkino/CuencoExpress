@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule, PreloadAllModules } from '@angular/router';
@@ -31,7 +31,7 @@ import { CardOffersComponent } from './Components/card-offers/card-offers.compon
 import { OffersComponent } from './Components/offers/offers.component';
 import { NotificationService } from './services/generated';
 import { SignalRService } from './signal-r.service';
-
+import { AppConfigProviderService } from './services/app-config-provider.service';
 
 
 @NgModule({
@@ -75,16 +75,29 @@ import { SignalRService } from './signal-r.service';
     ], { preloadingStrategy: PreloadAllModules })
 
   ],
+  
   providers: [AuthGuardService, ExpressService, NotificationService, SignalRService, {
     provide: HTTP_INTERCEPTORS,
     useFactory: getAuthServiceConfigs,
     useClass: MyInterceptor,
     multi: true
   },
+    [
+      AppConfigProviderService,
+      {
+        provide: APP_INITIALIZER,
+        useFactory: (appConfigProvider: AppConfigProviderService) => {
+          return () => appConfigProvider.loadConfig();
+        },
+        multi: true,
+        deps: [AppConfigProviderService]
+      }
+    ],
     {
       provide:  AuthServiceConfig,
       useFactory: getAuthServiceConfigs
     }
+
   ],
   bootstrap: [AppComponent]
 })

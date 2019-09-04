@@ -86,8 +86,8 @@ export class MyInterceptor implements HttpInterceptor {
           status: error.status
         };
         //this.errorDialogService.openDialog(data);
-        console.log(data);
-        toastr.error(data["reason"], 'Error:');
+        console.log(data);  
+        toastr.error(data["reason"][0].description != null ? data["reason"][0].description : data["reason"], 'Error:');
         return throwError(error);
       }));
 

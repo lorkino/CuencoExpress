@@ -84,16 +84,17 @@ namespace Film.Controllers
             {
                 Type = 0
             };
-            List<Notifications> notifications = new List<Notifications>
-            {
-                notification
-            };
+            
             foreach (var users in Users)
             {
-                users.Notifications = notifications;
-                if(NotificationsHub.UsersConnected.ContainsKey(users.Email))
-                 await _hubContext.Clients.Client(NotificationsHub.UsersConnected[users.Email]).SendAsync("ReceiveMessage", "juasjas");
+                users?.Notifications.Add(notification);
+                if (NotificationsHub.UsersConnected.ContainsKey(users?.Email))
+                {
+                    
+                    await _hubContext.Clients.Client(NotificationsHub.UsersConnected[users?.Email]).SendAsync("NotificationsNavMenu", JsonConvert.SerializeObject(users?.Notifications.Where(a => a.Readed == false).Select(a => (new { type = a.Type, createdDate=a.CreatedDate, readed=a.Readed }))));
+                }
             }
+
             context.SaveChanges();
         }
 

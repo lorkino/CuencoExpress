@@ -52,7 +52,11 @@ namespace Film.Areas.Identity.Pages.Account
         //    [Display(Name = "Remember me?")]
         //    public bool RememberMe { get; set; }
         //}
-
+        [HttpGet]
+        public async Task<IActionResult> test(string returnUrl = null)
+        {
+             return Ok();
+        }
         [HttpGet]
         [Authorize]
         public async Task OnGetAsync(string returnUrl = null)
@@ -89,15 +93,16 @@ namespace Film.Areas.Identity.Pages.Account
                 {
                    
                
-                    User userComplete = await _context.Users.Where(a => a.Email == user.Email).Include(a => a.UserDates).Include(b=>b.UserKnowledges).ThenInclude(post => post.Knowledges).FirstOrDefaultAsync();
+                    User userComplete = await _context.Users.Where(a => a.Email == user.Email).Include(a => a.UserDates).Include(b=>b.UserKnowledges).ThenInclude(post => post.Knowledges).Include(a=>a.Notifications).FirstOrDefaultAsync();
 
                     //llamamos al token de acceso
                     Tuple<string, DateTime> token = Film.Controllers.Account.BuildToken(user);
                     userComplete.Token = token.Item1;
                     userComplete.TokenExpiration = token.Item2;
                     ViewUser userSecure = userComplete;
-                    NotificationsHub NH = new NotificationsHub();
-                    NH.SetUser(userComplete.Email);
+                    
+                //añadimos el usuario al diccionario de singalR de usuarios conectados// CAMBIAR A REDIS
+                    
                     
                     return Ok(userSecure);
                 }

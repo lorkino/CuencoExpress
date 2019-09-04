@@ -9,11 +9,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using Film;
 using Film.TypeOf;
+using Nest;
 
 namespace Film.Models
 {
+    //[NotMapped]
+    //public class GeoLocation {
+    //    public double Lat { get; set; }
+    //    public double Lon { get; set; }
+    //    public GeoLocation(double Latitud, double Longitud)
+    //    {
+    //        Lat = Latitud;
+    //        Lon = Longitud;
+    //    }
+    //}
     public class UserDates
     {
+         public UserDates() {
+            Location = new GeoLocation(Lat,Lon);
+         }
         [ForeignKey("User")]
         public string Id { get; set; }
         public string Address1 { get; set; }
@@ -29,8 +43,15 @@ namespace Film.Models
         public string Phone { get; set; }
 
         [Range(0, 5)]
-        public double Score { get; set; } = 0;   
+        public double Score { get; set; } = 0;
+
         
+        [NotMapped]
+        public GeoLocation Location { get; set; }
+
+        public double Lat { get; set; }
+        public double Lon { get; set; }
+
         [JsonConverter(typeof(Base64FileJsonConverter))]
         public byte[] ProfileImg { get; set; }
 

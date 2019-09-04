@@ -101,8 +101,7 @@ namespace Film.Controllers
 
                 List<User> usersPreWorkers = MyGlobals.SearchByTags(knowledges.ToList());
                 usersPreWorkers.RemoveAll(a => a.Email == userName);
-                List<User> usersNotifications = _context.Users.Where(a=> usersPreWorkers.Any(b=>a.Email==b.Email)).Include(a=>a.UserDates).Include(a=>a.Suscription).ToList();
-                
+              
 
                 
                 List<JobPreWorker> jobPreWorkers = new List<JobPreWorker>();
@@ -130,8 +129,9 @@ namespace Film.Controllers
                     Title = "Oferta!",
                     Url = this.Request.Host.ToString()
                 };
+                List<User> usersNotifications = _context.Users.Where(a => usersPreWorkers.Any(b => a.Email == b.Email)).Include(a => a.UserDates).Include(a => a.Suscription).Include(a=>a.Notifications).ToList();
 
-                  NotificationsController.Broadcast(message, usersNotifications);
+                NotificationsController.Broadcast(message, usersNotifications);
                 NotificationsController NC = new NotificationsController(_context,_hubContext);
                 await NC.AddNotifications(usersNotifications, 0,_context);
                 return true;

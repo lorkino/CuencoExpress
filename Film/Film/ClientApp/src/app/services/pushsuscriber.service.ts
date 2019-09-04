@@ -20,6 +20,13 @@ export class PushsuscriberService {
 
 
   init() {
+    
+      var startPos;
+    navigator.geolocation.getCurrentPosition(function (position) {
+      console.log(position.coords.latitude);
+    });
+
+    
     if ('serviceWorker' in navigator && 'PushManager' in window) {
 
       navigator.serviceWorker.register('/assets/sw.js')

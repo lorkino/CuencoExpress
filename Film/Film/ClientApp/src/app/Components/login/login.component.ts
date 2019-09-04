@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ExpressService } from '../.././express.service';
 import { User } from '../.././Models/user';
 import { Router } from "@angular/router";
 import { AuthService, FacebookLoginProvider, GoogleLoginProvider } from 'angular5-social-login';
+import { CommonService } from '../../services/common/common.service';
+import { SignalRService } from '../../signal-r.service';
 
 @Component({
   selector: 'app-login',
@@ -17,16 +19,26 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', [Validators.required]),
     checkPassword: new FormControl(false)
   });
- 
-  constructor(private expressService: ExpressService, private router: Router, private socialAuthService: AuthService ) {
-
+  private signalRService: SignalRService;
+  private _injector: Injector;
+  constructor(private commonService: CommonService, private expressService: ExpressService,
+    private router: Router, private socialAuthService: AuthService, private injector: Injector) {
+    this._injector = injector
   }
 
   ngOnInit() {
     
   }
   onSubmit() { 
-    this.expressService.login(this.profileForm.value.email, this.profileForm.value.password, this.profileForm.value.checkPassword != true ? false : this.profileForm.value.checkPassword);  
+    this.expressService.login(
+      this.profileForm.value.email,
+      this.profileForm.value.password,
+      this.profileForm.value.checkPassword != true ? false : this.profileForm.value.checkPassword)
+      .subscribe((response) => {
+        console.log(response);
+        this.signalRService = this._injector.get<SignalRService>(SignalRService); 
+      })
+      ;  
   }
 
   public facebookLogin() {
@@ -45,6 +57,7 @@ export class LoginComponent implements OnInit {
         date.setDate(date.getDate() + 1);
         var tokenExpiration: any = date.toLocaleString();
         localStorage.setItem('tokenExpiration', tokenExpiration);
+        this.commonService.setSubject("a");
         this.router.navigate(['/']);
         console.log(userData);
       }

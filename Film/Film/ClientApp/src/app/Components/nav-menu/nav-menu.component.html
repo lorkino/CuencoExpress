@@ -67,7 +67,7 @@
             <i style="font-size:2em;" class="fas fa-business-time"></i>
             <span>Trabajo</span>
           </button>
-
+          <span class="badge badge-notify" [innerHTML]='countJobs>0?countJobs:""'></span>
         </div>
         <div class="col-sm-4">
           <button [routerLink]='["/profile"]' (click)="changeShow()" type="button" class="btn btn-outline-dark">

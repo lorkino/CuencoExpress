@@ -43,8 +43,11 @@ namespace Film
     {
        
         public ILogger<Startup> Logger { get; set; }
+        public static ILoggerFactory loggerFactory = null;
+        public static ILogger<ConsoleLoggerProvider> AppLogger = null;
         public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
+            configuration.GetSection("ServerInfo:ServerDate").Value = DateTime.UtcNow.ToString("yyyy-MM-ddTHH\\:mm\\:ss.fffffffzzz");
             Configuration = configuration;
             Logger = logger;
 
@@ -53,7 +56,7 @@ namespace Film
 
         }
 
-        public IConfiguration Configuration { get; }
+        public  IConfiguration Configuration { get; }
 
         
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -70,6 +73,12 @@ namespace Film
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            services.AddLogging(builder => builder
+       .AddConsole()
+       .AddFilter(level => level >= Microsoft.Extensions.Logging.LogLevel.Trace)
+   );
+            loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
+            AppLogger = loggerFactory.CreateLogger<ConsoleLoggerProvider>();
             
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options =>
@@ -223,6 +232,7 @@ namespace Film
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            
             app.UseAuthentication();
             app.UseSignalR(route =>
             {
@@ -245,17 +255,18 @@ namespace Film
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-
+            
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
                 spa.Options.SourcePath = "ClientApp";
-
+              
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");
+                    
                 }
             });
 

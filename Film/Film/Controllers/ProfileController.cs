@@ -30,7 +30,7 @@ namespace Film.Controllers
         public async Task<JsonResult> GetMe()
         {
             var userName = User.Identity.Name;
-            User userComplete = await _context.Users.Where(a => a.Email == userName).Include(a => a.UserDates).Include(b => b.UserKnowledges).ThenInclude(post => post.Knowledges).FirstOrDefaultAsync();
+            User userComplete = await _context.Users.Where(a => a.Email == userName).Include(a => a.UserDates).Include(b => b.UserKnowledges).ThenInclude(post => post.Knowledges).Include(a=>a.Notifications).FirstOrDefaultAsync();
 
             //llamamos al token de acceso
             Tuple<string, DateTime> token = Film.Controllers.Account.BuildToken(userComplete);
@@ -81,6 +81,30 @@ namespace Film.Controllers
                 });
                 user.UserKnowledges = ListuserKnowledges;
                 await _context.SaveChangesAsync();
+
+                //  if (MyGlobals.elasticClient.Indices.in("people").Exists)
+                //       MyGlobals.elasticClient.CreateIndex("people");
+
+                //var createIndexResponse = MyGlobals.elasticClient.Indices.Create("people", c => c
+                //    .Map<User>(m => m
+                //        .AutoMap()
+        
+                //    )
+                //);
+                //   if (MyGlobals.elasticClient.IndexExists("people").Exists)
+                //       MyGlobals.elasticClient.CreateIndex("people");
+                //    var createIndexResponse = MyGlobals.elasticClient.CreateIndex("people", c => c
+                //    .Mappings(m => m
+                //        .Map<User>(mm => mm
+                //            .AutoMap()
+                //            .Properties(p => p
+                //                .GeoPoint(g => g
+                //                    .Name(n => n.UserDates.Location)
+                //                )
+                //            )
+                //        )
+                //    )
+                //);
                 var asyncIndexResponse = await MyGlobals.elasticClient.IndexDocumentAsync(user);
             }
             catch (Exception e) {
@@ -103,7 +127,7 @@ namespace Film.Controllers
             var searchRequest = await MyGlobals.elasticClient.SearchAsync<User>(s =>
             s.Query(q => q
                 .Match(c=>c.Field(p=>p.UserKnowledges.First().Knowledges.Value).Query("Arquímedes"))
-                ).AllTypes().Index("people"));
+                ).Index("people"));
             return Json(user.UserDates);
 
 

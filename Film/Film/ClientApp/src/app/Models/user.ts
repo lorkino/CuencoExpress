@@ -1,6 +1,6 @@
 import { UserDates } from './userDates';
 import { Knowledge } from './knowledge';
-
+import { Notification } from './Notification';
 export class  User {
   admin: string;
   email: string;
@@ -11,4 +11,5 @@ export class  User {
   token: string;
   tokenExpiration: string;
   knowledges: Knowledge[];
+  notifications: Notification[]
 };
