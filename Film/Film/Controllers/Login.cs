@@ -4,10 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Film.Controllers;
 using Film.Models;
+using Film.SignalR;
+using Film.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Film.Areas.Identity.Pages.Account
 {
@@ -18,11 +21,12 @@ namespace Film.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<User> _signInManager;
         private UserManager<User> _userManager;
-
-        public LoginController(SignInManager<User> signInManager, UserManager<User> userManager)
+        private readonly ApplicationDbContext _context;
+        public LoginController(SignInManager<User> signInManager, UserManager<User> userManager, ApplicationDbContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _context = context;
         }
 
         //[BindProperty]
@@ -48,7 +52,11 @@ namespace Film.Areas.Identity.Pages.Account
         //    [Display(Name = "Remember me?")]
         //    public bool RememberMe { get; set; }
         //}
-        
+        [HttpGet]
+        public async Task<IActionResult> test(string returnUrl = null)
+        {
+             return Ok();
+        }
         [HttpGet]
         [Authorize]
         public async Task OnGetAsync(string returnUrl = null)
@@ -68,57 +76,50 @@ namespace Film.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
         [HttpPost]
-        public async Task<JsonResult> Login([FromBody] User user)
+        public async Task<IActionResult> Login([FromBody] User user)
         {
 
             //// This doesn't count login failures towards account lockout
             //// To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            
-           
-                var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, lockoutOnFailure: true);
-                User userComplete = await _userManager.FindByEmailAsync(user.Email);
 
-          
+      
+
+            var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, user.RememberMe, lockoutOnFailure: true);
             
-            if (userComplete != null)
+
+
+            
+                if (result.Succeeded)
                 {
-                    
-                    if (result.Succeeded)
-                    {
-                    
-                   //llamamos al token de acceso
-                    Tuple<string, DateTime> token = Film.Controllers.Account.BuildToken(user);
-                    User userSecure = new User
-                    {
-                        Admin = userComplete.Admin,
-                        Apellidos = userComplete.Apellidos,
-                        Nombre = userComplete.Nombre,
-                        Email = userComplete.Email,
-                        EmailConfirmed = userComplete.EmailConfirmed,
-                        UserDates = userComplete.UserDates,
-                        AccessFailedCount = userComplete.AccessFailedCount,
-                        RememberMe = userComplete.RememberMe,
-                        Token = token.Item1,
-                        TokenExpiration = token.Item2
-                    };
-                    return Json(userSecure);
-                    }
                    
-                    //if (result.RequiresTwoFactor)
-                    //{
-                    //    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                    //}
-                    if (result.IsLockedOut)
-                    {
+               
+                    User userComplete = await _context.Users.Where(a => a.Email == user.Email).Include(a => a.UserDates).Include(b=>b.UserKnowledges).ThenInclude(post => post.Knowledges).Include(a=>a.Notifications).FirstOrDefaultAsync();
 
-                        return Json("Blocked user");
-
-                    }
+                    //llamamos al token de acceso
+                    Tuple<string, DateTime> token = Film.Controllers.Account.BuildToken(user);
+                    userComplete.Token = token.Item1;
+                    userComplete.TokenExpiration = token.Item2;
+                    ViewUser userSecure = userComplete;
+                    
+                //añadimos el usuario al diccionario de singalR de usuarios conectados// CAMBIAR A REDIS
+                    
+                    
+                    return Ok(userSecure);
                 }
-           
+
+                //if (result.RequiresTwoFactor)
+                //{
+                //    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                //}
+                if (result.IsLockedOut)
+                {
+                    return BadRequest("Blocked user");
+                }
+            
+
 
             //// If we got this far, something failed, redisplay form
-            return Json("Incorrect User");
+            return BadRequest("Usuario incorrecto");
         }
     }
 }

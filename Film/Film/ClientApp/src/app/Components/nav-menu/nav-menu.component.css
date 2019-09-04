@@ -1,0 +1,19 @@
+
+/* Keep the nav menu independent of scrolling and on top of other items */
+
+.navbar-toggler-icon{
+  width: 2.5em;
+  height: 2.5em;
+}
+@media (min-width: 768px) {
+    /* On small screens, convert the nav menu to a vertical sidebar */
+  
+}
+
+.badge-notify {
+  background: red;
+  position: relative;
+  top:-83px;
+  left:-6px;
+
+}

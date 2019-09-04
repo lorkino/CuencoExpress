@@ -1,0 +1,60 @@
+
+<form class="form-horizontal" novalidate
+      [formGroup]="formGroup">
+  <fieldset>
+    <div class="form-group row justify-content-center">
+      <div class="loginForm border bg-white col col-lg-4 col-md-6 col-10">
+        <h1 class="mb-2" style="text-align:center;">Ingrese sus Datos</h1>
+        <div class="form-group row justify-content-center mt-2">
+          <div class="col col-10">
+            <label for="emailId">Email</label>
+            <input class="form-control"
+                   id="emailId"
+                   type="email"
+                   required
+                   formControlName="email" />        
+          </div>
+        </div>
+        <div class="form-group row justify-content-center mt-2">
+          <div class="col col-10">
+            <label for="passwordId">Password</label>
+            <input class="form-control"
+                   id="passwordId"
+                   type="password"
+                    (keyup)="equalPassword()"
+                   required
+                   formControlName="password"  />         
+          </div>
+        </div>
+        <div class="form-group row justify-content-center mt-2">
+          <div class="col col-10">
+            <label for="passwordId">Confirm Password</label>
+            <input class="form-control"
+                   id="passwordId2"
+                   type="password"
+                    (keyup)="equalPassword()"
+                   required
+                   formControlName="password2" />
+
+            <small class="text-danger"
+                   *ngIf=" !formGroup.controls['password'].pristine &&
+                                                !passwordsAreEqual">Boths passwords must be equal</small>
+          </div>
+        </div>
+        <div class="form-group row justify-content-center">
+          <div class="col col-10">           
+              <button class="btn btn-outline-dark"
+                      type="button"
+                      (click)="registrarse()"
+                      [disabled]="!formGroup.valid || !passwordsAreEqual">
+                Registrarse
+              </button>
+              <div class="float-right">
+                <button class="btn btn-outline-dark " (click)="facebookLogin()"><i class="fab fa-facebook-f"></i></button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</form>

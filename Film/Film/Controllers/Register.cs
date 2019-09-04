@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity.UI.Pages.Account.Internal;
+using Newtonsoft.Json;
 
 namespace Film.Areas.Identity.Pages.Account
 {
@@ -38,6 +39,12 @@ namespace Film.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
         }
+        //objeto dinamico
+        //public IActionResult Post([FromBody] object token)
+        //{
+        //    //Convierte el object que se pasa 
+        //    String t = ((dynamic)JObject.Parse(token.ToString())).token;
+
 
         //[BindProperty]
         //public InputModel Input { get; set; }
@@ -67,12 +74,15 @@ namespace Film.Areas.Identity.Pages.Account
         //{
         //    ReturnUrl = returnUrl;
         //}
-       
+
+        /// <summary>
+        /// Registro de un nuevo usuario
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] User User)
         {
-           
-            
+
+
                 var user = new User { UserName = User.Email, Email = User.Email };
                 var result = await _userManager.CreateAsync(user, User.Password);
                 if (result.Succeeded)
@@ -94,14 +104,20 @@ namespace Film.Areas.Identity.Pages.Account
                 string host = HttpContext.Request.Host.ToString();
 
                 var route = Url.RouteUrl("ConfirmEmail", new { userId = user.Id, code = code });
-                host = "http://"+host + route;
+                host = "https://"+host + route;
 
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(User.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{host}'>clicking here</a>.");
 
-                    await _emailSender.SendEmailAsync(User.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{host}'>clicking here</a>.");
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return Redirect("Confirm_Email");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return Ok("Revisa tu correo para confirmar el email");
+                    }
+                    catch (Exception e) {
+                        await _userManager.DeleteAsync(user);
+                        return BadRequest("Ha habido en error en su registro intentelo de nuevo");
+                    }
                 }         
             
             return BadRequest(result.Errors);
@@ -109,7 +125,11 @@ namespace Film.Areas.Identity.Pages.Account
 
         }
         //[HttpGet("ConfirmEmail/{userId}/{code}")]
+        /// <summary>
+        /// Confirmación de correo electrónico
+        /// </summary>
         [Route("register-email", Name = "ConfirmEmail")]
+        [HttpGet]
         public async Task<IActionResult> ConfirmEmail(string userId,  string code )
         {
             if (userId == null || code == null)

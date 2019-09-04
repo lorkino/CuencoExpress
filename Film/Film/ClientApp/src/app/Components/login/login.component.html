@@ -1,0 +1,42 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  <div class="form-group row justify-content-center">
+    <div class="loginForm border bg-white col col-lg-4 col-md-6 col-10">
+      <div class="form-group row justify-content-center mt-2">
+        <div class="col col-10">
+          <label for="exampleInputEmail1">Email address</label>
+          <div class="bg-input">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" formControlName="email" required>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row justify-content-center">
+        <div class="col col-10">
+          <label for="exampleInputPassword1">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" formControlName="password" required>
+        </div>
+      </div>
+      <div class="form-group row justify-content-center align-middle">
+        <div class="form-group col col-10 mt-2">
+
+          <label class="switch float-left">
+            <input type="checkbox" class="default " id="exampleInputRemember" formControlName="checkPassword">
+            <span class="slider round"></span>
+          </label>
+          <p class="d-inline-block  ml-2 mt-2">Remember password?</p>
+
+        </div>
+      </div>
+      <div class="form-group row justify-content-center">
+        <div class="col col-10">
+          <button type="submit" class="btn btn-outline-dark" [disabled]="!profileForm.valid">Entrar</button>
+          <div class="float-right">
+            <button class="btn btn-outline-dark " (click)="facebookLogin()"><i class="fab fa-facebook-f"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+

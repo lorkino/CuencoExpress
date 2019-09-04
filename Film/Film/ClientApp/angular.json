@@ -21,18 +21,24 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/css/bootstrap.min.css",
               "src/css/toastr.min.css",
-              "src/css/selectize.default.css"
+              "src/css/selectize.default.css",
+              "src/assets/fontawesome/css/all.css",
+              //"src/assets/socialbuttons/boostrap-social.css"
+              // "node_modules/materialize-css/dist/css/materialize.css"
+              "src/css/bootstrap-social.css"
             ],
             "scripts": [
               "src/js/jquery.min.js",
+              "src/js/bootstrap.min.js",
               "src/js/toastr.min.js",
               "src/js/toastrOption.js",
               "src/js/selectize.min.js",
               "src/js/intlTelInput.js",
-              "src/js/utils.js"
+              "src/js/utils.js" //,
+              //"node_modules/materialize-css/dist/js/materialize.js"
+
             ]
           },
           "configurations": {

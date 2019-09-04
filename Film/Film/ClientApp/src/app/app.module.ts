@@ -1,25 +1,39 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
-
+import { RouterModule, PreloadAllModules } from '@angular/router';
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
+import { NavMenuComponent } from './Components/./nav-menu/nav-menu.component';
+import { HomeComponent } from './Components/./home/home.component';
+import { CounterComponent } from './Components/./counter/counter.component';
+import { FetchDataComponent } from './Components/./fetch-data/fetch-data.component';
+import { LoginComponent } from './Components/./login/login.component';
+import { RegisterComponent } from './Components/./register/register.component';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { AuthGuardService } from './auth-guard.service';
 import { ExpressService } from './express.service';
+import { GeneralService } from './general.service';
 import { MyInterceptor } from './interceptor';
-import { ProfileComponent } from './profile/profile.component';
-import { KnowledgesComponent } from './knowledges/knowledges.component';
+import { ProfileComponent } from './Components/./profile/profile.component';
+import { KnowledgesComponent } from './Components/knowledges/knowledges.component';
 import { SocialLoginModule, AuthServiceConfig } from "angular5-social-login";
 import { FacebookLoginProvider } from "angular5-social-login";
 import { getAuthServiceConfigs } from "./socialloginConfig";
+import { NavMenuTopComponent } from './Components/nav-menu-top/nav-menu-top.component';
+import { JobComponent } from './Components/job/job.component';
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { InternationalPhoneNumberModule } from 'ngx-international-phone-number';
+import { LoadingScreenComponent } from './components/loading-screen/loading-screen.component';
+import { CardJobComponent } from './Components/card-job/card-job.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { CardOffersComponent } from './Components/card-offers/card-offers.component';
+import { OffersComponent } from './Components/offers/offers.component';
+import { NotificationService } from './services/generated';
+import { SignalRService } from './signal-r.service';
+import { AppConfigProviderService } from './services/app-config-provider.service';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,33 +44,60 @@ import { getAuthServiceConfigs } from "./socialloginConfig";
     LoginComponent,
     RegisterComponent,
     ProfileComponent,
-    KnowledgesComponent
+    KnowledgesComponent,
+    NavMenuTopComponent,
+    JobComponent,
+    LoadingScreenComponent,
+    CardJobComponent,
+    CardOffersComponent,
+    OffersComponent
+
+
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    AngularFontAwesomeModule,
     ReactiveFormsModule,
     SocialLoginModule,
+    NgxPaginationModule,
+    InternationalPhoneNumberModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuardService]  },
+      { path: 'fetch-data', component: FetchDataComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'profile', component: ProfileComponent, canActivate: [AuthGuardService]  }
-    ])
+      { path: 'profile', component: ProfileComponent, canActivate: [AuthGuardService] },
+      { path: 'offer', component: OffersComponent, canActivate: [AuthGuardService] },
+      { path: 'job', component: JobComponent, canActivate: [AuthGuardService] }
+    ], { preloadingStrategy: PreloadAllModules })
+
   ],
-  providers: [AuthGuardService, ExpressService, {
+  
+  providers: [AuthGuardService, ExpressService, NotificationService, SignalRService, {
     provide: HTTP_INTERCEPTORS,
     useFactory: getAuthServiceConfigs,
     useClass: MyInterceptor,
     multi: true
   },
+    [
+      AppConfigProviderService,
+      {
+        provide: APP_INITIALIZER,
+        useFactory: (appConfigProvider: AppConfigProviderService) => {
+          return () => appConfigProvider.loadConfig();
+        },
+        multi: true,
+        deps: [AppConfigProviderService]
+      }
+    ],
     {
       provide:  AuthServiceConfig,
       useFactory: getAuthServiceConfigs
     }
+
   ],
   bootstrap: [AppComponent]
 })
